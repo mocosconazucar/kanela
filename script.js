@@ -19,8 +19,8 @@ const CONFIG = {
   ],
   privado: {
     drive: "https://drive.google.com/",  // tu carpeta de Drive
-    codigo: "kanela",                    // código que tú das a quien quieras
-    correo: "tucorreo@gmail.com"
+    codigo: "draxiowo456",                    // código que tú das a quien quieras
+    correo: "draxiowo21@gmail.com"
   },
   adminPin: "1234",      // solo se usa si NO configuras Firebase
   firebase: {            // pega aquí tu firebaseConfig (ver pasos)
