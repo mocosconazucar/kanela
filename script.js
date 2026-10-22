@@ -3,7 +3,7 @@ const CONFIG = {
   nombre: "Draxie",
   bio: "Escribo notas, guardo informes y colecciono cosas bonitas. Aquí hay bibliografía corta de mí: (aquí tu texto).",
   bienvenida: "Este es mi kinder de notas. Pasa, mira, deja un comentario.",
-  banner: "",            // ej: "img/banner.gif"
+  banner: "banner.gif",            // ej: "img/banner.gif"
   avatar: "img/img/yo.gif",  // ej: "img/yo.png", "img/yo.jpg"
   redes: [
     {n: "Instagram", u: "https://instagram.com/tuusuario"},
