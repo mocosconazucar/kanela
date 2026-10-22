@@ -15,7 +15,7 @@ const CONFIG = {
   ],
   fotos: ["img/foto1.jpg", "img/foto2.jpg", "img/foto3.jpg", "img/foto4.jpg", "img/gif1.gif", "img/gif2.gif"],             // ej: ["img/foto1.jpg","img/foto2.gif"]
   informes: [
-    {t: "Informe de ejemplo", d: "2026-10", u: "#"}
+    {t: "se lo comieron los gatooooos", d: "( ;´ - `;)", u: "#"}
   ],
   privado: {
     drive: "https://drive.google.com/drive/folders/1cZXcbGIPWYDX5lccoAaVHIZylIBpXHkQ?usp=sharing",  // tu carpeta de Drive
