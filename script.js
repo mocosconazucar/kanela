@@ -18,7 +18,7 @@ const CONFIG = {
     {t: "Informe de ejemplo", d: "2026-10", u: "#"}
   ],
   privado: {
-    drive: "https://drive.google.com/",  // tu carpeta de Drive
+    drive: "https://drive.google.com/drive/folders/1cZXcbGIPWYDX5lccoAaVHIZylIBpXHkQ?usp=sharing",  // tu carpeta de Drive
     codigo: "draxiowo456",                    // código que tú das a quien quieras
     correo: "draxiowo21@gmail.com"
   },
