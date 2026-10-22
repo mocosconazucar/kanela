@@ -11,7 +11,7 @@ const CONFIG = {
     {n: "Discord", u: "#"}
   ],
   notas: [
-    {t: "Primera nota", d: "2026-10-22", x: "Cambia este texto en script.js. Puedes agregar tantas notas como quieras."}
+    {t: "zzz (˘ω˘)", d: "2026-10-22", x: "tengo sueñoooooooooo"}
   ],
   fotos: [],             // ej: ["img/foto1.jpg","img/foto2.gif"]
   informes: [
