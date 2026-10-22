@@ -6,9 +6,9 @@ const CONFIG = {
   banner: "banner.gif",            // ej: "img/banner.gif"
   avatar: "img/img/yo.gif",  // ej: "img/yo.png", "img/yo.jpg"
   redes: [
-    {n: "Instagram", u: "https://instagram.com/tuusuario"},
-    {n: "TikTok", u: "https://tiktok.com/@tuusuario"},
-    {n: "Discord", u: "#"}
+    {n: "Instagram", u: "https://www.instagram.com/frutatsu"},
+    {n: "TikTok", u: "https://www.tiktok.com/@simshushi"},
+    {n: "Discord: idraxie", u: "#"}
   ],
   notas: [
     {t: "zzz (˘ω˘)", d: "2026-10-22", x: "tengo sueñoooooooooo"}
