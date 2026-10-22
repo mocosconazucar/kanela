@@ -56,7 +56,7 @@ input,select{font:inherit;color:inherit;max-width:100%;border:1px solid #cfc7d8;
 #msgs{list-style:none;margin:0 0 8px;padding:0;height:300px;overflow-y:auto;font-size:13px}
 #msgs li{padding:3px 0;border-bottom:1px solid #ffffff14;word-break:break-word}
 #msgs b{margin-right:4px}#msgs time{opacity:.5;font-size:11px;margin-left:4px}
-#msgs button{float:right;background:none;border:0;color:#f09ab5;cursor:pointer}
+#msgs button{margin-left:auto;align-self:flex-start;background:none;border:0;color:#f09ab5;cursor:pointer}
 #chatForm{display:grid;gap:5px}
 
 footer{text-align:center;padding:10px;background:#efc6dc99}footer .link{margin-left:10px}
@@ -66,3 +66,8 @@ footer{text-align:center;padding:10px;background:#efc6dc99}footer .link{margin-l
 
 @media(max-width:860px){.cols{grid-template-columns:1fr}.banner{height:170px}}
 @media(prefers-reduced-motion:reduce){.kao{animation:none}}
+
+.who{display:flex;gap:6px;align-items:center}.who input{flex:1;min-width:0}
+.myav,.av{width:28px;height:28px;border-radius:50%;flex:none;object-fit:cover;display:grid;place-items:center;font-size:13px;color:#2f2a35;background:#efc6dc center/cover}
+.myav{cursor:pointer;border:1px dashed #fff}.av{width:26px;height:26px;margin-top:1px}
+#msgs li.c{display:flex;gap:7px;align-items:flex-start}.c .tx{flex:1;min-width:0}

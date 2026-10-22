@@ -72,7 +72,8 @@
         <h3>comentarios</h3>
         <ul id="msgs" aria-live="polite"></ul>
         <form id="chatForm">
-          <input id="nick" placeholder="tu apodo" maxlength="16" required>
+          <div class="who"><label class="myav" id="myAv" title="elige tu foto de perfil">+<input id="avFile" type="file" accept="image/*" hidden></label>
+          <input id="nick" placeholder="tu apodo" maxlength="16" required></div>
           <input id="msg" placeholder="escribe un comentario…" maxlength="200" required>
           <button class="btn">enviar</button>
         </form>
@@ -112,6 +113,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

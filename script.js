@@ -1,40 +1,3 @@
-/* ===== EDITA AQUÍ TUS DATOS ===== */
-const CONFIG = {
-  nombre: "Draxie",
-  bio: "Escribo notas, guardo informes y colecciono cosas bonitas. Aquí hay bibliografía corta de mí: (aquí tu texto).",
-  bienvenida: "Este es mi kinder de notas. Pasa, mira, deja un comentario.",
-  banner: "banner.gif",            // ej: "img/banner.gif"
-  avatar: "img/img/yo.gif",  // ej: "img/yo.png", "img/yo.jpg"
-  redes: [
-    {n: "Instagram", u: "https://www.instagram.com/frutatsu"},
-    {n: "TikTok", u: "https://www.tiktok.com/@simshushi"},
-    {n: "Discord: idraxie", u: "#"}
-  ],
-  notas: [
-    {t: "zzz (˘ω˘)", d: "2026-10-22", x: "tengo sueñoooooooooo"}
-  ],
-  fotos: ["img/foto1.jpg", "img/foto2.jpg", "img/foto3.jpg", "img/foto4.jpg", "img/gif1.gif", "img/gif2.gif"],             // ej: ["img/foto1.jpg","img/foto2.gif"]
-  informes: [
-    {t: "se lo comieron los gatooooos", d: "( ;´ - `;)", u: "#"}
-  ],
-  privado: {
-    drive: "https://drive.google.com/drive/folders/1cZXcbGIPWYDX5lccoAaVHIZylIBpXHkQ?usp=sharing",  // tu carpeta de Drive
-    codigo: "draxiowo456",                    // código que tú das a quien quieras
-    correo: "draxiowo21@gmail.com"
-  },
-  adminPin: "1234",      // solo se usa si NO configuras Firebase
-  firebase: {            // pega aquí tu firebaseConfig (ver pasos)
-    apiKey: "AIzaSyAryABcorWHI3RabO5ubkXjYganSFbAK8s",
-    authDomain: "kanela-15235.firebaseapp.com",
-    databaseURL: "https://kanela-15235-default-rtdb.firebaseio.com",
-    projectId: "kanela-15235",
-    storageBucket: "kanela-15235.firebasestorage.app",
-    messagingSenderId: "869165059331",
-    appId: "1:869165059331:web:f373e91c99d1141f5e6d36"
-  }
-};
-/* ================================= */
-
 const $ = s => document.querySelector(s);
 const ls = {
   get(k, d){ try{ return JSON.parse(localStorage.getItem(k)) ?? d }catch{ return d } },
@@ -159,12 +122,18 @@ function draw(){
   const all = online ? msgs : local.load();
   if(!all.length) ul.innerHTML = '<li>aún no hay comentarios. ¡sé el primero! ✧</li>';
   all.forEach(m => {
-    const li = document.createElement('li'), b = document.createElement('b'), t = document.createElement('time');
+    const li = document.createElement('li'), box = document.createElement('div'), b = document.createElement('b'), t = document.createElement('time');
+    li.className = 'c'; box.className = 'tx';
+    let av;
+    if(m.a && /^data:image\/jpeg;base64,/.test(m.a)){ av = new Image(); av.src = m.a; av.alt = '' }
+    else { av = document.createElement('span'); av.textContent = (m.n || '?')[0].toUpperCase(); av.style.background = color(m.n || '?') }
+    av.className = 'av';
     b.textContent = m.n + ': '; b.style.color = color(m.n);
     t.textContent = new Date(m.t).toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit'});
-    li.append(b, document.createTextNode(m.x), t);
+    box.append(b, document.createTextNode(m.x), t);
+    li.append(av, box);
     if(admin || isMine(m)){ const x = document.createElement('button'); x.textContent = '✕'; x.title = 'eliminar';
-      x.onclick = () => { online ? rdb.child(m.id).remove().catch(() => alert('No se pudo eliminar')) : (local.del(m.id), draw()) }; li.prepend(x) }
+      x.onclick = () => { online ? rdb.child(m.id).remove().catch(() => alert('No se pudo eliminar')) : (local.del(m.id), draw()) }; li.append(x) }
     ul.append(li);
   });
   ul.scrollTop = ul.scrollHeight;
@@ -182,15 +151,26 @@ if(online){
 } else admin = sessionStorage.getItem('kk-admin') === '1';
 
 $('#nick').value = ls.get('kk-nick', '');
+/* foto de perfil del comentarista: se reduce a 64x64 y viaja con cada comentario */
+let myAv = ls.get('kk-av', '');
+const paintAv = () => { const e = $('#myAv'); e.style.backgroundImage = myAv ? `url("${myAv}")` : ''; e.childNodes[0].textContent = myAv ? '' : '+' };
+const shrink = f => new Promise((ok, no) => { const img = new Image(), u = URL.createObjectURL(f);
+  img.onload = () => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
+    g.fillStyle = '#fff'; g.fillRect(0, 0, 64, 64); const s = Math.min(img.width, img.height);
+    g.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 64, 64); URL.revokeObjectURL(u); ok(c.toDataURL('image/jpeg', .8)) };
+  img.onerror = no; img.src = u });
+$('#avFile').onchange = async e => { const f = e.target.files[0]; if(!f) return;
+  try{ myAv = await shrink(f); ls.set('kk-av', myAv); paintAv() }catch{ alert('No pude leer esa imagen') } e.target.value = '' };
+paintAv();
 $('#chatForm').onsubmit = e => { e.preventDefault();
   const n = $('#nick').value.trim(), x = $('#msg').value.trim(); if(!n || !x) return;
   ls.set('kk-nick', n);
   if(online){
     if(!me) return alert('Conectando… intenta de nuevo en un segundo.');
-    rdb.push({n, x, t: firebase.database.ServerValue.TIMESTAMP, uid: me}).catch(() => alert('No se pudo enviar el comentario'));
+    rdb.push({n, x, t: firebase.database.ServerValue.TIMESTAMP, uid: me, ...(myAv ? {a: myAv} : {})}).catch(() => alert('No se pudo enviar el comentario'));
   } else {
     const id = Date.now() + '' + Math.random().toString(36).slice(2, 6);
-    mine.add(id); ls.set('kk-mine', [...mine]); local.push({id, n, x, t: Date.now()}); draw();
+    mine.add(id); ls.set('kk-mine', [...mine]); local.push({id, n, x, t: Date.now(), ...(myAv ? {a: myAv} : {})}); draw();
   }
   $('#msg').value = '';
 };
