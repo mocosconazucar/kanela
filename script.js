@@ -4,7 +4,7 @@ const CONFIG = {
   bio: "Escribo notas, guardo informes y colecciono cosas bonitas. Aquí hay bibliografía corta de mí: (aquí tu texto).",
   bienvenida: "Este es mi kinder de notas. Pasa, mira, deja un comentario.",
   banner: "",            // ej: "img/banner.gif"
-  avatar: "img/yo.gif",  // ej: "img/yo.png", "img/yo.jpg"
+  avatar: "img/img/yo.gi",  // ej: "img/yo.png", "img/yo.jpg"
   redes: [
     {n: "Instagram", u: "https://instagram.com/tuusuario"},
     {n: "TikTok", u: "https://tiktok.com/@tuusuario"},
