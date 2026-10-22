@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EL KINDER de kanela · Draxie</title>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="win">
+  <nav class="tabs" id="tabs" aria-label="Secciones">
+    <button data-tab="inicio" class="on">inicio</button>
+    <button data-tab="notas">notas</button>
+    <button data-tab="fotos">fotos</button>
+    <button data-tab="informes">informes</button>
+    <button data-tab="privado">privado ♡</button>
+  </nav>
+  <div class="bar">
+    <span class="url">kanela.draxie/<b id="urlTab">inicio</b></span>
+    <button id="btnCustom" class="btn only-admin">✎ personalizar</button>
+  </div>
+
+  <header class="banner" id="banner">
+    <h1><span class="kao">(๑˃ᴗ˂)ﻭ</span> EL KINDER <small>de</small> kanela <span class="kao">٩(◕‿◕｡)۶</span></h1>
+  </header>
+
+  <div class="cols">
+    <aside class="side">
+      <section class="box prof">
+        <div class="avatar"><img id="avImg" alt="Foto de Draxie" hidden></div>
+        <p class="err small" id="avErr" hidden></p>
+        <h2 id="nombre">Draxie</h2>
+        <p class="mood"><button id="mood" class="link" title="cambiar mood">(˶ᵔ ᵕ ᵔ˶)</button></p>
+        <p class="hearts" aria-hidden="true">♥♥♥♥♥♥♡ <span>LV. 17</span></p>
+        <p id="bio"></p>
+      </section>
+      <section class="box"><h3>mis redes</h3><ul class="list" id="redes"></ul></section>
+    </aside>
+
+    <main>
+      <section id="s-inicio" class="pane">
+        <article class="box"><h3>bienvenid@ ✧</h3><p id="welcome"></p></article>
+        <article class="box"><h3>últimas notas</h3><div id="ultimas"></div></article>
+      </section>
+      <section id="s-notas" class="pane" hidden><div id="notas"></div></section>
+      <section id="s-fotos" class="pane" hidden>
+        <div class="box">
+          <h3>fotos</h3>
+          <label class="btn only-admin">+ agregar fotos <input id="fotoFile" type="file" accept="image/*" multiple hidden></label>
+          <div class="grid" id="fotos"></div>
+        </div>
+      </section>
+      <section id="s-informes" class="pane" hidden><div class="box"><h3>informes</h3><ul class="list" id="informes"></ul></div></section>
+      <section id="s-privado" class="pane" hidden>
+        <div class="box">
+          <h3>zona privada ♡</h3>
+          <p>Los informes de aquí solo los ve quien tenga mi permiso.</p>
+          <div id="lock">
+            <label>código de acceso <input id="code" type="password" autocomplete="off"></label>
+            <button id="btnUnlock" class="btn">entrar</button>
+            <p class="err" id="codeErr" hidden>Código incorrecto.</p>
+            <p><a id="pedir" href="#">pedir acceso a Draxie</a></p>
+          </div>
+          <div id="unlocked" hidden><p>Acceso concedido ✧</p><a id="driveLink" class="btn" target="_blank" rel="noopener">abrir carpeta de Drive</a></div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="side">
+      <section class="box chat">
+        <h3>comentarios</h3>
+        <ul id="msgs" aria-live="polite"></ul>
+        <form id="chatForm">
+          <input id="nick" placeholder="tu apodo" maxlength="16" required>
+          <input id="msg" placeholder="escribe un comentario…" maxlength="200" required>
+          <button class="btn">enviar</button>
+        </form>
+      </section>
+    </aside>
+  </div>
+  <footer>hecho por Draxie ✧ (づ｡◕‿‿◕｡)づ <button id="btnAdmin" class="link small">modo Draxie</button></footer>
+</div>
+
+<aside id="panel" hidden>
+  <h3>personalizar</h3>
+  <p class="small">Sirve cualquier imagen: PNG, JPG, GIF, WEBP.</p>
+  <label>fondo de la página
+    <select id="bgPreset"></select>
+  </label>
+  <label>o un color <input type="color" id="bgColor" value="#f7d9e8"></label>
+  <label>o tu imagen / GIF de fondo <input type="file" id="bgFile" accept="image/*"></label>
+  <button class="btn" data-del="bg">quitar mi fondo</button>
+  <label>banner <input type="file" id="bannerFile" accept="image/*"></label>
+  <button class="btn" data-del="banner">quitar banner</button>
+  <label>foto de perfil <input type="file" id="avatarFile" accept="image/*"></label>
+  <button class="btn" data-del="avatar">quitar foto</button>
+  <label>color de acento <input type="color" id="accent" value="#d9779f"></label>
+  <p class="small" id="panelMsg"></p>
+  <div class="row"><button class="btn" id="reset">restablecer todo</button><button class="btn" id="closePanel">cerrar</button></div>
+</aside>
+<dialog id="lb"><img id="lbImg" alt=""></dialog>
+<script src="script.js"></script>
+</body>
+</html>
