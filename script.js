@@ -22,7 +22,16 @@ const CONFIG = {
     codigo: "kanela",                    // código que tú das a quien quieras
     correo: "tucorreo@gmail.com"
   },
-  adminPin: "1234"       // PIN de "modo Draxie" (cámbialo)
+  adminPin: "1234",      // solo se usa si NO configuras Firebase
+  firebase: {            // pega aquí tu firebaseConfig (ver pasos)
+    apiKey: "AIzaSyAryABcorWHI3RabO5ubkXjYganSFbAK8s",
+    authDomain: "kanela-15235.firebaseapp.com",
+    databaseURL: "https://kanela-15235-default-rtdb.firebaseio.com",
+    projectId: "kanela-15235",
+    storageBucket: "kanela-15235.firebasestorage.app",
+    messagingSenderId: "869165059331",
+    appId: "1:869165059331:web:f373e91c99d1141f5e6d36"
+  }
 };
 /* ================================= */
 
@@ -135,36 +144,63 @@ $('#btnCustom').onclick = () => $('#panel').hidden = !$('#panel').hidden;
 $('#closePanel').onclick = () => $('#panel').hidden = true;
 
 /* ---- comentarios ----
-   Se guardan en ESTE navegador. Para que todos vean los de todos hace falta
-   un servidor (Firebase/Supabase): solo cambia store.load / push / del. */
-const store = { load: () => ls.get('kk-chat', []), push: m => ls.set('kk-chat', [...store.load(), m].slice(-100)),
-  del: id => ls.set('kk-chat', store.load().filter(m => m.id !== id)) };
+   Con Firebase configurado: compartidos entre todos. Sin él: solo en este navegador. */
+const FB = CONFIG.firebase;
+const online = !!(FB && FB.apiKey && window.firebase);
+let msgs = [], me = null, admin = false, rdb = null, auth = null;
 const mine = new Set(ls.get('kk-mine', []));
-let admin = sessionStorage.getItem('kk-admin') === '1';
+const local = { load: () => ls.get('kk-chat', []), push: m => ls.set('kk-chat', [...local.load(), m].slice(-100)),
+  del: id => ls.set('kk-chat', local.load().filter(m => m.id !== id)) };
 const color = n => `hsl(${[...n].reduce((h, c) => h * 31 + c.charCodeAt(0), 7) % 360} 70% 75%)`;
+const isMine = m => online ? m.uid === me : mine.has(m.id);
 function draw(){
   document.body.classList.toggle('admin', admin);
   const ul = $('#msgs'); ul.innerHTML = '';
-  const all = store.load();
+  const all = online ? msgs : local.load();
   if(!all.length) ul.innerHTML = '<li>aún no hay comentarios. ¡sé el primero! ✧</li>';
   all.forEach(m => {
     const li = document.createElement('li'), b = document.createElement('b'), t = document.createElement('time');
     b.textContent = m.n + ': '; b.style.color = color(m.n);
     t.textContent = new Date(m.t).toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit'});
     li.append(b, document.createTextNode(m.x), t);
-    if(admin || mine.has(m.id)){ const x = document.createElement('button'); x.textContent = '✕'; x.title = 'eliminar'; x.onclick = () => { store.del(m.id); draw() }; li.prepend(x) }
+    if(admin || isMine(m)){ const x = document.createElement('button'); x.textContent = '✕'; x.title = 'eliminar';
+      x.onclick = () => { online ? rdb.child(m.id).remove().catch(() => alert('No se pudo eliminar')) : (local.del(m.id), draw()) }; li.prepend(x) }
     ul.append(li);
   });
   ul.scrollTop = ul.scrollHeight;
 }
+if(online){
+  firebase.initializeApp(FB);
+  auth = firebase.auth(); rdb = firebase.database().ref('comentarios');
+  auth.onAuthStateChanged(u => {
+    if(!u){ auth.signInAnonymously().catch(() => {}); return }
+    me = u.uid; admin = !u.isAnonymous; if(!admin) $('#panel').hidden = true; draw();
+  });
+  rdb.orderByChild('t').limitToLast(100).on('value', s => {
+    msgs = []; s.forEach(c => { msgs.push({id: c.key, ...c.val()}) }); draw();
+  });
+} else admin = sessionStorage.getItem('kk-admin') === '1';
+
 $('#nick').value = ls.get('kk-nick', '');
 $('#chatForm').onsubmit = e => { e.preventDefault();
   const n = $('#nick').value.trim(), x = $('#msg').value.trim(); if(!n || !x) return;
-  const id = Date.now() + '' + Math.random().toString(36).slice(2, 6);
-  ls.set('kk-nick', n); mine.add(id); ls.set('kk-mine', [...mine]);
-  store.push({id, n, x, t: Date.now()}); $('#msg').value = ''; draw() };
+  ls.set('kk-nick', n);
+  if(online){
+    if(!me) return alert('Conectando… intenta de nuevo en un segundo.');
+    rdb.push({n, x, t: firebase.database.ServerValue.TIMESTAMP, uid: me}).catch(() => alert('No se pudo enviar el comentario'));
+  } else {
+    const id = Date.now() + '' + Math.random().toString(36).slice(2, 6);
+    mine.add(id); ls.set('kk-mine', [...mine]); local.push({id, n, x, t: Date.now()}); draw();
+  }
+  $('#msg').value = '';
+};
 $('#btnAdmin').onclick = () => {
+  if(online){ admin ? auth.signOut() : $('#login').showModal(); return }
   if(admin) admin = false; else if(prompt('PIN de Draxie') === CONFIG.adminPin) admin = true;
   sessionStorage.setItem('kk-admin', admin ? '1' : '0'); if(!admin) $('#panel').hidden = true; draw();
 };
+$('#loginForm').onsubmit = async e => { e.preventDefault();
+  try{ await auth.signInWithEmailAndPassword($('#lEmail').value.trim(), $('#lPass').value); $('#login').close(); $('#lPass').value = '' }
+  catch{ $('#lErr').hidden = false } };
+$('#lCancel').onclick = () => $('#login').close();
 draw(); apply(); renderFotos();
