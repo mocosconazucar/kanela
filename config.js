@@ -13,7 +13,7 @@ const CONFIG = {
   notas: [
     {t: "zzz (˘ω˘)", d: "2026-10-22", x: "tengo sueñoooooooooo"}
   ],
-  fotos: ["img/foto1.jpg", "img/foto2.jpg", "img/foto3.jpg", "img/foto4.jpg", "img/gif1.gif", "img/gif2.gif"],
+  fotos: ["img/foto1.jpg", "img/foto2.jpg", "img/foto3.jpg", "img/foto4.jpg", "img/gif1.gif", "img/gif2.gif"],   stickers: ["img/stickers/feliz.gif", "img/stickers/gato.png", "img/stickers/sueno.png"],
   informes: [
     {t: "Informe de ejemplo", d: "2026-10", u: "#"}
   ],
