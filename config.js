@@ -18,7 +18,7 @@ const CONFIG = {
     {t: "Informe de ejemplo", d: "2026-10", u: "#"}
   ],
   privado: {
-    drive: "PEGA_AQUI_TU_LINK_DE_DRIVE",  // copia la línea 21 de tu script.js actual
+    drive: "https://drive.google.com/drive/folders/1cZXcbGIPWYDX5lccoAaVHIZylIBpXHkQ?usp=sharing",  // copia la línea 21 de tu script.js actual
     codigo: "draxiowo456",               // código que tú das a quien quieras
     correo: "draxiowo21@gmail.com"
   },
