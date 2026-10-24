@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://*.firebaseio.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://*.firebaseio.com; object-src 'none'; base-uri 'none'">
 <title>EL KINDER de kanela · Draxie</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=DotGothic16&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=DotGothic16&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,28 +14,30 @@
   <aside class="side glass" id="side">
     <header class="srv">EL KINDER <small>de</small> kanela <span>✧˖°</span></header>
     <nav id="chs" aria-label="Canales">
-      <div class="cat">✧ bienvenida</div>
-      <button class="ch on" data-ch="inicio"><i>🌸</i>inicio</button>
-      <div class="cat">📓 contenido</div>
-      <button class="ch" data-ch="notas"><i>📝</i>notas</button>
-      <button class="ch" data-ch="fotos"><i>📸</i>fotos</button>
-      <button class="ch" data-ch="informes"><i>📁</i>informes</button>
-      <div class="cat">🫧 lobby</div>
-      <button class="ch" data-ch="comentarios"><i>💬</i>comentarios<u class="badge" id="bComent" hidden></u></button>
-      <button class="ch" data-ch="guarderia"><i>🧸</i>guardería</button>
-      <button class="ch" data-ch="privado"><i>🔒</i>privado</button>
+      <div class="cat">˖ ✿ ✧ -- ○› bienvenida --┐</div>
+      <button class="ch on" data-ch="inicio"><span class="g">┊˖</span><b>♡</b><i>≥</i><span class="n">inicio</span></button>
+      <div class="cat">˖ ✿ ✧ -- ○› contenido --┐</div>
+      <button class="ch" data-ch="notas"><span class="g">┊˖</span><b>✎</b><i>≥</i><span class="n">notas</span></button>
+      <button class="ch" data-ch="fotos"><span class="g">┊˖</span><b>✦</b><i>≥</i><span class="n">fotos</span></button>
+      <button class="ch" data-ch="informes"><span class="g">┊˖</span><b>◇</b><i>≥</i><span class="n">informes</span></button>
+      <div class="cat">˖ ✿ ✧ -- ○› lobby --┐</div>
+      <button class="ch" data-ch="comentarios"><span class="g">┊˖</span><b>☾</b><i>≥</i><span class="n">comentarios</span><u class="badge" id="bComent" hidden></u></button>
+      <button class="ch" data-ch="guarderia"><span class="g">┊˖</span><b>❀</b><i>≥</i><span class="n">guardería</span></button>
+      <button class="ch" data-ch="privado"><span class="g">┊˖</span><b>⋆</b><i>≥</i><span class="n">privado</span></button>
     </nav>
   </aside>
   <div class="scrim" id="scrim"></div>
 
   <div class="main">
     <header class="top glass">
-      <button id="btnMenu" class="pill ic menuBtn" aria-label="Canales">☰</button>
+      <button id="btnMenu" class="ib menuBtn" aria-label="Canales"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <nav class="ws" id="ws" aria-label="Espacios"></nav>
       <h1 id="chName"># inicio</h1><p id="chDesc"></p>
       <div class="acts2">
-        <button id="btnFx" class="pill" aria-pressed="true"><span>💧</span><em>efectos</em></button>
-        <button id="btnCustom" class="pill only-admin"><span>🎨</span><em>personalizar</em></button>
-        <button id="btnAdmin" class="pill"><span>🔑</span><em>modo Draxie</em></button>
+        <span class="mono" id="topClock"></span>
+        <button id="btnFx" class="ib" title="efectos" aria-label="efectos" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg></button>
+        <button id="btnCustom" class="ib only-admin" title="personalizar" aria-label="personalizar"><svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
+        <button id="btnAdmin" class="ib" title="modo Draxie" aria-label="modo Draxie"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg></button>
       </div>
     </header>
 
@@ -54,7 +56,10 @@
         <div class="bento">
           <article class="glass card span2"><h3>sobre mí</h3><p id="bio"></p><p class="small" id="desde"></p></article>
           <article class="glass card clock"><b id="hora"></b><span id="fecha"></span></article>
-          <article class="glass card wide"><h3>últimas notas</h3><div id="ultimas"></div></article>
+          <article class="glass card nf" id="nf"></article>
+          <article class="glass card term span2"><div class="tbar"><i></i><i></i><i></i><span>draxie@kanela: ~</span></div><pre id="term" aria-label="terminal decorativa"></pre></article>
+          <article class="glass card span2"><h3>últimas notas</h3><div id="ultimas"></div></article>
+          <article class="glass card viz"><div class="bars" id="bars" aria-hidden="true"></div><span class="mono" id="song"></span></article>
         </div>
       </section>
 
@@ -76,8 +81,8 @@
             <div class="rbar" hidden><span></span><button type="button" title="cancelar">✕</button></div>
             <div class="row"><button type="button" class="myav me" title="tu perfil">+</button>
               <input class="msgin inp" placeholder="escribe un comentario…" maxlength="200" autocomplete="off">
-              <button type="button" class="pill ic stk-btn" title="stickers">🧸</button>
-              <button class="pill ic">➤</button></div>
+              <button type="button" class="ib stk-btn" title="stickers" aria-label="stickers"><svg viewBox="0 0 24 24"><path d="M5 4h14v10l-6 6H5z"/><path d="M13 20v-6h6"/><circle cx="9.5" cy="9.5" r=".7"/><circle cx="14.5" cy="9.5" r=".7"/></svg></button>
+              <button class="ib send" title="enviar" aria-label="enviar"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button></div>
             <div class="tray" hidden></div>
           </form>
         </div>
@@ -86,7 +91,7 @@
       <section id="v-guarderia" class="view" hidden>
         <div class="glass card" id="gOff" hidden><p>La guardería necesita Firebase configurado.</p></div>
         <form id="gAuth" class="glass card" hidden>
-          <h3>guardería 🧸</h3>
+          <h3>guardería ♡</h3>
           <p>Chat solo para miembros. Tu correo no se muestra: aquí te ven con tu apodo.</p>
           <label>correo <input class="inp" id="gMail" type="email" required autocomplete="email"></label>
           <label>contraseña <input class="inp" id="gPass" type="password" minlength="6" required autocomplete="current-password"></label>
@@ -101,14 +106,14 @@
           <button class="pill" id="gDone">ya verifiqué ✓</button> <button class="pill" id="gResend">reenviar correo</button> <button class="link" data-out type="button">salir</button>
         </div>
         <div class="chat glass wa" id="gChat" hidden>
-          <div class="ghead"><span>🧸 guardería</span><button class="link" data-out type="button">salir</button></div>
+          <div class="ghead"><span>guardería</span><button class="link" data-out type="button">salir</button></div>
           <ul id="gMsgs" class="msgs" aria-live="polite"></ul>
           <form id="gForm" class="cform">
             <div class="rbar" hidden><span></span><button type="button" title="cancelar">✕</button></div>
             <div class="row"><button type="button" class="myav me" title="tu perfil">+</button>
               <input class="msgin inp" placeholder="escribe un mensaje…" maxlength="300" autocomplete="off">
-              <button type="button" class="pill ic stk-btn" title="stickers">🧸</button>
-              <button class="pill ic">➤</button></div>
+              <button type="button" class="ib stk-btn" title="stickers" aria-label="stickers"><svg viewBox="0 0 24 24"><path d="M5 4h14v10l-6 6H5z"/><path d="M13 20v-6h6"/><circle cx="9.5" cy="9.5" r=".7"/><circle cx="14.5" cy="9.5" r=".7"/></svg></button>
+              <button class="ib send" title="enviar" aria-label="enviar"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button></div>
             <div class="tray" hidden></div>
           </form>
         </div>

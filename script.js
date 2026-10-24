@@ -5,7 +5,8 @@ const ls = {
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true }catch{ return false } }
 };
 const say = t => { $('#panelMsg').textContent = t };
-const CF = {estado: '✧ bienvenid@ a mi kinder', usuario: '', desde: '', stickers: [], notas: [], fotos: [], informes: [], redes: [], ...CONFIG};
+const DEF_CODE = ['$ whoami', 'draxie ✧', '$ cat sobre-mi.txt', 'escribo notas, guardo informes y colecciono cosas bonitas', '$ ./kanela --start', '[ok] interfaz de vidrio ...... listo', '[ok] estrellas y luciérnagas . listo', '[ok] gotitas de agua ......... listo', '$ echo "tengo sueño"', 'tengo sueño'];
+const CF = {fondo: '', cancion: 'kanela fm · lo-fi', codigo: DEF_CODE, neofetch: null, estado: '✧ bienvenid@ a mi kinder', usuario: '', desde: '', stickers: [], notas: [], fotos: [], informes: [], redes: [], ...CONFIG};
 
 /* ---- imágenes guardadas en el navegador (IndexedDB) ---- */
 const dbp = new Promise((ok, no) => { try{ const r = indexedDB.open('kk', 1);
@@ -29,12 +30,14 @@ const fillNotas = (el, arr) => {
   el.querySelectorAll('article').forEach((a, i) => { a.querySelector('h4').textContent = arr[i].t; a.querySelector('p').textContent = arr[i].x });
 };
 fillNotas($('#notas'), CF.notas); fillNotas($('#ultimas'), CF.notas.slice(0, 2));
-$('#informes').innerHTML = CF.informes.map(i => `<a class="irow" href="${i.u}" target="_blank" rel="noopener">📄 ${i.t} <small>${i.d}</small></a>`).join('');
+$('#informes').innerHTML = CF.informes.map(i => `<a class="irow" href="${i.u}" target="_blank" rel="noopener">◇ ${i.t} <small>${i.d}</small></a>`).join('');
 const kaos = ['(˶ᵔ ᵕ ᵔ˶)', '(｡•̀ᴗ-)✧', '(≧◡≦)', '(っ˘ω˘ς)', 'ᕙ(˵ ಠ ਊ ಠ ˵)ᕗ', '(｡T ω T｡)'];
 let k = 0; $('#mood').onclick = () => { $('#mood').textContent = kaos[++k % kaos.length] };
 const tick = () => { const d = new Date(); $('#hora').textContent = d.toLocaleTimeString('es', {hour: '2-digit', minute: '2-digit'});
   $('#fecha').textContent = d.toLocaleDateString('es', {weekday: 'long', day: 'numeric', month: 'long'}) };
 tick(); setInterval(tick, 20000);
+const tickTop = () => { $('#topClock').textContent = new Date().toLocaleTimeString('es', {hour: '2-digit', minute: '2-digit'}) };
+tickTop(); setInterval(tickTop, 20000);
 
 /* ---- fotos (las de config.js + las que subas en modo Draxie) ---- */
 async function renderFotos(){
@@ -73,7 +76,7 @@ const BG = {
 $('#bgPreset').innerHTML = Object.keys(BG).map(n => `<option>${n}</option>`).join('');
 const S = ls.get('kk-set', {});
 async function apply(){
-  const bg = await urlOf('bg'), ba = (await urlOf('banner')) || CF.banner, av = (await urlOf('avatar')) || CF.avatar;
+  const bg = (await urlOf('bg')) || (CF.fondo && await probe(CF.fondo) ? CF.fondo : null), ba = (await urlOf('banner')) || CF.banner, av = (await urlOf('avatar')) || CF.avatar;
   $('#bgfill').style.background = bg ? `url("${bg}") center/cover` : S.bgColor || BG[S.bg] || '';
   $('#banner').style.setProperty('--banner', ba && await probe(ba) ? `url("${ba}")` : 'none');
   if(S.accent) document.documentElement.style.setProperty('--pink', S.accent);
@@ -165,7 +168,7 @@ const pub = makeChat({form: $('#chatForm'), ul: $('#msgs'), empty: 'aún no hay 
   list: () => online ? pubMsgs : local.load(), isMine: m => online ? m.uid === me : mine.has(m.id),
   send: d => online ? push('comentarios', d) : (() => { const id = Date.now() + Math.random().toString(36).slice(2, 6); mine.add(id); ls.set('kk-mine', [...mine]); local.push({id, t: Date.now(), ...d}) })(),
   remove: id => online ? db.ref('comentarios/' + id).remove() : local.del(id)});
-const gc = makeChat({form: $('#gForm'), ul: $('#gMsgs'), wa: true, empty: 'Nadie ha escrito todavía. ¡Rompe el hielo! 🧸',
+const gc = makeChat({form: $('#gForm'), ul: $('#gMsgs'), wa: true, empty: 'Nadie ha escrito todavía. ¡Rompe el hielo! ♡',
   list: () => gMsgs, isMine: m => m.uid === me, send: d => push('guarderia/mensajes', d), remove: id => db.ref('guarderia/mensajes/' + id).remove()});
 
 /* ---- avisos de comentarios nuevos ---- */
@@ -176,7 +179,7 @@ const markSeen = () => { const t = Math.max(0, ...pubMsgs.map(m => m.t || 0)); i
 /* ---- botones de modo Draxie ---- */
 function ui(){
   document.body.classList.toggle('admin', admin);
-  const b = $('#btnAdmin'); b.querySelector('span').textContent = admin ? '🚪' : '🔑'; b.querySelector('em').textContent = admin ? 'salir' : 'modo Draxie';
+  const b = $('#btnAdmin'); b.classList.toggle('on', admin); b.title = admin ? 'salir del modo Draxie' : 'modo Draxie';
   if(!admin) $('#panel').hidden = true;
 }
 let gRef = null;
@@ -234,11 +237,12 @@ $('#lCancel').onclick = () => $('#login').close();
 
 /* ---- canales (navegación) ---- */
 const CH = {inicio: ['inicio', 'bienvenid@ a mi rinconcito ✧'], notas: ['notas', 'mis notas y pensamientos'], fotos: ['fotos', 'cositas bonitas'],
-  informes: ['informes', 'mis informes'], comentarios: ['comentarios', 'deja tu comentario con tu apodo'], guarderia: ['guardería', 'chat para miembros 🧸'], privado: ['privado', 'solo con mi permiso']};
+  informes: ['informes', 'mis informes'], comentarios: ['comentarios', 'deja tu comentario con tu apodo'], guarderia: ['guardería', 'chat para miembros ♡'], privado: ['privado', 'solo con mi permiso']};
 function go(ch, save = true){
   if(!CH[ch]) ch = 'inicio'; cur = ch;
   $$('.view').forEach(v => { const on = v.id === 'v-' + ch; v.hidden = !on; v.classList.remove('in'); if(on){ void v.offsetWidth; v.classList.add('in') } });
   $$('.ch').forEach(b => b.classList.toggle('on', b.dataset.ch === ch));
+  $$('#ws button').forEach(b => b.classList.toggle('on', b.dataset.ch === ch));
   $('#chName').textContent = '# ' + CH[ch][0]; $('#chDesc').textContent = CH[ch][1];
   $('#app').classList.remove('open');
   if(save) history.replaceState(null, '', '#' + ch);
@@ -249,4 +253,22 @@ function go(ch, save = true){
 $('#chs').onclick = e => { const b = e.target.closest('.ch'); if(b) go(b.dataset.ch) };
 $('#btnMenu').onclick = () => $('#app').classList.toggle('open');
 $('#scrim').onclick = () => $('#app').classList.remove('open');
+/* ---- decoración estilo terminal / Linux ---- */
+$('#ws').innerHTML = Object.keys(CH).map(k => `<button data-ch="${k}" title="${CH[k][0]}" aria-label="${CH[k][0]}"></button>`).join('');
+$('#ws').onclick = e => { const b = e.target.closest('button'); if(b) go(b.dataset.ch) };
+const NF = CF.neofetch || [['os', 'kanela linux'], ['host', CF.nombre], ['shell', 'cute.sh'], ['wm', 'glass-wm'], ['tema', 'pastel · vidrio'], ['mood', '(˶ᵔ ᵕ ᵔ˶)']];
+$('#nf').innerHTML = `<b>${CF.nombre.toLowerCase()}@kanela</b><hr>` + NF.map(([a, v]) => `<div><span>${a}</span>${v}</div>`).join('') +
+  '<div class="pal">' + ['#ff7eb6', '#b79ce6', '#a9cdf5', '#a8e6cf', '#ffd3a5', '#ffffff'].map(c => `<i style="background:${c}"></i>`).join('') + '</div>';
+$('#bars').innerHTML = Array.from({length: 22}, () => `<span style="animation-duration:${(.6 + Math.random() * 1).toFixed(2)}s;animation-delay:-${(Math.random() * 2).toFixed(2)}s"></span>`).join('');
+$('#song').textContent = '♪ ' + CF.cancion;
+(async function typeLoop(){
+  const el = $('#term'), L = CF.codigo, sl = ms => new Promise(r => setTimeout(r, ms)), cls = l => l[0] === '$' ? 'cmd' : l.startsWith('[ok]') ? 'ok' : '';
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ el.innerHTML = ''; L.forEach(l => { const d = document.createElement('div'); d.className = cls(l); d.textContent = l; el.append(d) }); return }
+  for(;;){ el.innerHTML = '';
+    for(const l of L){ while(document.hidden) await sl(1000);
+      const d = document.createElement('div'); d.className = cls(l); el.append(d);
+      if(l[0] === '$'){ for(const c of l){ d.textContent += c; await sl(35 + Math.random() * 45) } await sl(300) } else { d.textContent = l; await sl(260) } }
+    await sl(4500) }
+})();
+
 paintMe(); renderFotos(); apply(); go(location.hash.slice(1) || 'inicio', false);

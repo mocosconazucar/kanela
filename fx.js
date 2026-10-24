@@ -6,12 +6,14 @@
   const back = mk(0), front = mk(30), gb = back.getContext('2d'), gf = front.getContext('2d');
   const COL = ['#3f76e4', '#5b8def', '#8fb8ff', '#d4e6ff', '#ff9ccb', '#ffffff'];
   const R = (a, b) => a + Math.random() * (b - a), col = () => COL[Math.floor(Math.random() * COL.length)];
-  let W, H, stars = [], flies = [], B = [], F = [];
+  let W, H, stars = [], flies = [], cols = [], B = [], F = [];
+  const RC = 'ｱｲｳｴｵｶｷｸ01{}<>/;=+*kanela♡';
   const spr = document.createElement('canvas'); spr.width = spr.height = 40;
   { const g = spr.getContext('2d'), r = g.createRadialGradient(20, 20, 0, 20, 20, 20); r.addColorStop(0, 'rgba(255,248,190,1)'); r.addColorStop(.35, 'rgba(255,205,235,.55)'); r.addColorStop(1, 'rgba(255,205,235,0)'); g.fillStyle = r; g.fillRect(0, 0, 40, 40) }
   const size = () => { W = back.width = front.width = innerWidth; H = back.height = front.height = innerHeight;
     stars = Array.from({length: small ? 45 : 95}, () => ({x: R(0, W), y: R(0, H), s: Math.random() < .25 ? 3 : 2, ph: R(0, 6.3), sp: R(.02, .05), p: Math.random() < .3}));
-    flies = Array.from({length: small ? 7 : 14}, () => ({x: R(0, W), y: R(0, H), a: R(0, 6.3), ph: R(0, 6.3), r: R(.5, 1)})) };
+    flies = Array.from({length: small ? 7 : 14}, () => ({x: R(0, W), y: R(0, H), a: R(0, 6.3), ph: R(0, 6.3), r: R(.5, 1)}));
+    cols = Array.from({length: Math.floor(W / 20)}, (_, i) => ({x: i * 20 + 4, y: R(-H, 0), v: R(.8, 2), on: Math.random() < (small ? .15 : .26), len: Math.floor(R(8, 20))})) };
   addEventListener('resize', size); size();
   const addB = p => { if(B.length < 120) B.push(p) }, addF = p => { if(F.length < 200) F.push(p) };
   const splash = (x, y, n = 3) => { for(let i = 0; i < n; i++) addB({k: 's', x, y, vx: R(-1.2, 1.2), vy: R(-2.4, -.8), s: 3, life: R(18, 30), max: 30, c: col()}) };
@@ -27,6 +29,9 @@
     const dt = Math.min(now - last, 50) / 16.67; last = now;
     gb.clearRect(0, 0, W, H); gf.clearRect(0, 0, W, H);
     if(!on) return;
+    gb.font = '14px "JetBrains Mono",monospace'; gb.fillStyle = '#fff0f8';
+    for(let i = 0; i < cols.length; i++){ const c = cols[i]; if(!c.on) continue; c.y += c.v * dt; if(c.y - c.len * 16 > H){ c.y = R(-200, 0); c.v = R(.8, 2) }
+      for(let k = 0; k < c.len; k++){ const y = c.y - k * 16; if(y < -16 || y > H) continue; gb.globalAlpha = (1 - k / c.len) * .24; gb.fillText(RC[(Math.floor(y / 16) * 7 + i * 3) % RC.length], c.x, y) } }
     for(const s of stars){ s.ph += s.sp * dt; const a = .25 + .75 * (.5 + .5 * Math.sin(s.ph)), x = Math.round(s.x), y = Math.round(s.y), n = s.s;
       gb.globalAlpha = a; gb.fillStyle = s.p ? '#ffd0ea' : '#fff'; gb.fillRect(x - n, y, 2 * n + 1, 1); gb.fillRect(x, y - n, 1, 2 * n + 1); gb.fillRect(x, y, 2, 2) }
     for(const f of flies){ f.a += R(-.06, .06) * dt; f.x += Math.cos(f.a) * .35 * dt; f.y += Math.sin(f.a) * .35 * dt; f.ph += .03 * dt;
@@ -48,7 +53,7 @@
   }
   requestAnimationFrame(frame);
   const btn = $('#btnFx');
-  const label = () => { btn.querySelector('em').textContent = on ? 'efectos' : 'sin efectos'; btn.classList.toggle('off', !on); btn.setAttribute('aria-pressed', on) };
+  const label = () => { btn.classList.toggle('off', !on); btn.setAttribute('aria-pressed', on) };
   btn.onclick = () => { on = !on; B = []; F = []; localStorage.setItem('kk-fx', on ? '1' : '0'); label() };
   label();
 })();
