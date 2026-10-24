@@ -1,11 +1,13 @@
-const $ = s => document.querySelector(s);
+/* Web de Draxie · lógica. Tus datos están en config.js */
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const ls = {
   get(k, d){ try{ return JSON.parse(localStorage.getItem(k)) ?? d }catch{ return d } },
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true }catch{ return false } }
 };
-const say = t => $('#panelMsg').textContent = t;
+const say = t => { $('#panelMsg').textContent = t };
+const CF = {estado: '✧ bienvenid@ a mi kinder', usuario: '', desde: '', stickers: [], notas: [], fotos: [], informes: [], redes: [], ...CONFIG};
 
-/* ---- almacén de imágenes (IndexedDB: aguanta GIFs pesados) ---- */
+/* ---- imágenes guardadas en el navegador (IndexedDB) ---- */
 const dbp = new Promise((ok, no) => { try{ const r = indexedDB.open('kk', 1);
   r.onupgradeneeded = () => r.result.createObjectStore('f'); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error) }catch(e){ no(e) } });
 const idb = (mode, fn) => dbp.then(d => new Promise((ok, no) => { const t = d.transaction('f', mode), q = fn(t.objectStore('f'));
@@ -18,19 +20,23 @@ const urlOf = async k => { const b = await get(k); return b ? URL.createObjectUR
 const probe = src => new Promise(ok => { const i = new Image(); i.onload = () => ok(true); i.onerror = () => ok(false); i.src = src });
 
 /* ---- contenido ---- */
-$('#nombre').textContent = CONFIG.nombre;
-$('#bio').textContent = CONFIG.bio;
-$('#welcome').textContent = CONFIG.bienvenida;
-$('#redes').innerHTML = CONFIG.redes.map(r => `<li><a href="${r.u}" target="_blank" rel="noopener">✧ ${r.n}</a></li>`).join('');
+$('#nombre').textContent = CF.nombre; $('#usuario').textContent = CF.usuario;
+$('#bio').textContent = CF.bio; $('#estado').textContent = CF.estado + ' ';
+$('#desde').textContent = CF.desde ? 'miembro desde ' + CF.desde : '';
+$('#redes').innerHTML = CF.redes.map(r => `<a class="chip" href="${r.u}" target="_blank" rel="noopener"><b>${(r.i || r.n.slice(0, 2)).toUpperCase()}</b>${r.n}</a>`).join('');
 const fillNotas = (el, arr) => {
-  el.innerHTML = arr.map(n => `<article class="nota box"><time>${n.d}</time><h4></h4><p></p></article>`).join('');
+  el.innerHTML = arr.map(n => `<article class="nota"><time>${n.d}</time><h4></h4><p></p></article>`).join('');
   el.querySelectorAll('article').forEach((a, i) => { a.querySelector('h4').textContent = arr[i].t; a.querySelector('p').textContent = arr[i].x });
 };
-fillNotas($('#notas'), CONFIG.notas);
-fillNotas($('#ultimas'), CONFIG.notas.slice(0, 2));
-$('#informes').innerHTML = CONFIG.informes.map(i => `<li><a href="${i.u}" target="_blank" rel="noopener">${i.t} <small>${i.d}</small></a></li>`).join('');
+fillNotas($('#notas'), CF.notas); fillNotas($('#ultimas'), CF.notas.slice(0, 2));
+$('#informes').innerHTML = CF.informes.map(i => `<a class="irow" href="${i.u}" target="_blank" rel="noopener">📄 ${i.t} <small>${i.d}</small></a>`).join('');
+const kaos = ['(˶ᵔ ᵕ ᵔ˶)', '(｡•̀ᴗ-)✧', '(≧◡≦)', '(っ˘ω˘ς)', 'ᕙ(˵ ಠ ਊ ಠ ˵)ᕗ', '(｡T ω T｡)'];
+let k = 0; $('#mood').onclick = () => { $('#mood').textContent = kaos[++k % kaos.length] };
+const tick = () => { const d = new Date(); $('#hora').textContent = d.toLocaleTimeString('es', {hour: '2-digit', minute: '2-digit'});
+  $('#fecha').textContent = d.toLocaleDateString('es', {weekday: 'long', day: 'numeric', month: 'long'}) };
+tick(); setInterval(tick, 20000);
 
-/* ---- fotos: las de CONFIG + las que subas tú ---- */
+/* ---- fotos (las de config.js + las que subas en modo Draxie) ---- */
 async function renderFotos(){
   const g = $('#fotos'); g.innerHTML = '';
   const add = (src, key) => {
@@ -41,146 +47,206 @@ async function renderFotos(){
       x.onclick = async () => { await del(key); renderFotos() }; f.append(x) }
     g.append(f);
   };
-  CONFIG.fotos.forEach(s => add(s));
+  CF.fotos.forEach(s => add(s));
   for(const k of (await keys()).filter(k => String(k).startsWith('foto:'))) add(await urlOf(k), k);
   if(!g.children.length) g.innerHTML = Array(6).fill('<div>tu foto<br>aquí ✧</div>').join('');
 }
-$('#fotoFile').onchange = async e => {
-  for(const f of e.target.files) await put('foto:' + Date.now() + Math.random().toString(36).slice(2, 5), f);
-  e.target.value = ''; renderFotos();
-};
+$('#fotoFile').onchange = async e => { for(const f of e.target.files) await put('foto:' + Date.now() + Math.random().toString(36).slice(2, 5), f); e.target.value = ''; renderFotos() };
 $('#lb').onclick = () => $('#lb').close();
 
-/* ---- pestañas ---- */
-function go(tab){
-  document.querySelectorAll('.pane').forEach(p => p.hidden = p.id !== 's-' + tab);
-  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
-  $('#urlTab').textContent = tab;
-}
-$('#tabs').onclick = e => { if(e.target.dataset.tab) go(e.target.dataset.tab) };
-const kaos = ['(˶ᵔ ᵕ ᵔ˶)','(｡•̀ᴗ-)✧','(≧◡≦)','(っ˘ω˘ς)','ᕙ(˵ ಠ ਊ ಠ ˵)ᕗ','(｡T ω T｡)'];
-let k = 0; $('#mood').onclick = () => $('#mood').textContent = kaos[++k % kaos.length];
-
 /* ---- zona privada ---- */
-const P = CONFIG.privado;
-$('#driveLink').href = P.drive;
+const P = CF.privado || {};
+$('#driveLink').href = P.drive || '#';
 $('#pedir').href = `mailto:${P.correo}?subject=${encodeURIComponent('Acceso a la zona privada')}&body=${encodeURIComponent('Hola Draxie, me das acceso? Mi correo de Google es: ')}`;
 const unlock = () => { $('#lock').hidden = true; $('#unlocked').hidden = false };
 if(sessionStorage.getItem('kk-ok')) unlock();
-$('#btnUnlock').onclick = () => {
-  if($('#code').value.trim() === P.codigo){ sessionStorage.setItem('kk-ok', 1); unlock() }
-  else $('#codeErr').hidden = false;
-};
+$('#btnUnlock').onclick = () => { if($('#code').value.trim() === P.codigo){ sessionStorage.setItem('kk-ok', 1); unlock() } else $('#codeErr').hidden = false };
 
 /* ---- apariencia: fondo, banner, perfil ---- */
 const BG = {
-  'rosa cuadros': 'conic-gradient(#fbeaf2 25%,#f3c9dd 0 50%,#fbeaf2 0 75%,#f3c9dd 0) 0 0/36px 36px',
-  'rosa liso': 'linear-gradient(160deg,#fbe3ee,#f3c9dd)',
-  'lila con cruces': '#e6dfee repeating-linear-gradient(45deg,#ffffff55 0 2px,transparent 2px 14px)',
-  'gris tinta': 'radial-gradient(circle at 30% 20%,#fff,#d9d9de 60%,#b9b9c2)',
-  'puntitos': 'radial-gradient(#9a6c9855 2px,transparent 2px) 0 0/22px 22px,#f4eef8',
-  'noche': 'linear-gradient(160deg,#2f2a35,#5a4a68)'
+  'aurora rosa': '',
+  'lila nube': 'linear-gradient(160deg,#e6d9ff,#cdb8f5 60%,#b8c9f5)',
+  'cielo': 'linear-gradient(160deg,#d7ecff,#b9d6f7 60%,#d9c6f5)',
+  'durazno': 'linear-gradient(160deg,#ffe3d1,#ffc7dc 60%,#e2c4f2)',
+  'noche': 'linear-gradient(160deg,#2f2a4a,#4b3b73 60%,#6a4a8f)'
 };
 $('#bgPreset').innerHTML = Object.keys(BG).map(n => `<option>${n}</option>`).join('');
 const S = ls.get('kk-set', {});
 async function apply(){
-  const bg = await urlOf('bg'), ba = (await urlOf('banner')) || CONFIG.banner, av = (await urlOf('avatar')) || CONFIG.avatar;
-  document.body.style.background = bg ? `url("${bg}") center/cover fixed` : S.bgColor || BG[S.bg] || BG['rosa cuadros'];
-  const r = document.documentElement.style;
-  r.setProperty('--banner', ba && await probe(ba) ? `url("${ba}")` : 'none');
-  if(S.accent) r.setProperty('--acento', S.accent);
+  const bg = await urlOf('bg'), ba = (await urlOf('banner')) || CF.banner, av = (await urlOf('avatar')) || CF.avatar;
+  $('#bgfill').style.background = bg ? `url("${bg}") center/cover` : S.bgColor || BG[S.bg] || '';
+  $('#banner').style.setProperty('--banner', ba && await probe(ba) ? `url("${ba}")` : 'none');
+  if(S.accent) document.documentElement.style.setProperty('--pink', S.accent);
   const img = $('#avImg'), err = $('#avErr');
   if(av && await probe(av)){ img.src = av; img.hidden = false; err.hidden = true }
   else { img.hidden = true; err.hidden = !av; err.textContent = `No encuentro «${av}». Revisa que esté en la carpeta img/ y que el nombre y la extensión coincidan.` }
 }
 const setS = (key, val) => { if(val === null) delete S[key]; else S[key] = val; ls.set('kk-set', S); apply() };
 const upload = (id, key) => $(id).onchange = async e => { const f = e.target.files[0]; if(!f) return;
-  try{ await put(key, f); if(key === 'bg'){ delete S.bgColor; delete S.bg; ls.set('kk-set', S) } say('listo ✧'); apply() }
-  catch{ say('no se pudo guardar en este navegador') } e.target.value = '' };
+  try{ await put(key, f); if(key === 'bg'){ delete S.bgColor; delete S.bg; ls.set('kk-set', S) } say('listo ✧'); apply() } catch{ say('no se pudo guardar en este navegador') } e.target.value = '' };
 upload('#bgFile', 'bg'); upload('#bannerFile', 'banner'); upload('#avatarFile', 'avatar');
 $('#panel').onclick = async e => { const d = e.target.dataset.del; if(d){ await del(d); say('quitado'); apply() } };
 $('#bgPreset').onchange = async e => { await del('bg'); delete S.bgColor; setS('bg', e.target.value) };
 $('#bgColor').oninput = async e => { await del('bg'); setS('bgColor', e.target.value) };
 $('#accent').oninput = e => setS('accent', e.target.value);
 $('#reset').onclick = async () => { localStorage.removeItem('kk-set'); for(const k of await keys()) await del(k); location.reload() };
-$('#btnCustom').onclick = () => $('#panel').hidden = !$('#panel').hidden;
-$('#closePanel').onclick = () => $('#panel').hidden = true;
+$('#btnCustom').onclick = () => { $('#panel').hidden = !$('#panel').hidden };
+$('#closePanel').onclick = () => { $('#panel').hidden = true };
 
-/* ---- comentarios ----
-   Con Firebase configurado: compartidos entre todos. Sin él: solo en este navegador. */
-const FB = CONFIG.firebase;
-const online = !!(FB && FB.apiKey && window.firebase);
-let msgs = [], me = null, admin = false, rdb = null, auth = null;
-const mine = new Set(ls.get('kk-mine', []));
-const local = { load: () => ls.get('kk-chat', []), push: m => ls.set('kk-chat', [...local.load(), m].slice(-100)),
-  del: id => ls.set('kk-chat', local.load().filter(m => m.id !== id)) };
-const color = n => `hsl(${[...n].reduce((h, c) => h * 31 + c.charCodeAt(0), 7) % 360} 70% 75%)`;
-const isMine = m => online ? m.uid === me : mine.has(m.id);
-function draw(){
-  document.body.classList.toggle('admin', admin);
-  const ul = $('#msgs'); ul.innerHTML = '';
-  const all = online ? msgs : local.load();
-  if(!all.length) ul.innerHTML = '<li>aún no hay comentarios. ¡sé el primero! ✧</li>';
-  all.forEach(m => {
-    const li = document.createElement('li'), box = document.createElement('div'), b = document.createElement('b'), t = document.createElement('time');
-    li.className = 'c'; box.className = 'tx';
-    let av;
-    if(m.a && /^data:image\/jpeg;base64,/.test(m.a)){ av = new Image(); av.src = m.a; av.alt = '' }
-    else { av = document.createElement('span'); av.textContent = (m.n || '?')[0].toUpperCase(); av.style.background = color(m.n || '?') }
-    av.className = 'av';
-    b.textContent = m.n + ': '; b.style.color = color(m.n);
-    t.textContent = new Date(m.t).toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit'});
-    box.append(b, document.createTextNode(m.x), t);
-    li.append(av, box);
-    if(admin || isMine(m)){ const x = document.createElement('button'); x.textContent = '✕'; x.title = 'eliminar';
-      x.onclick = () => { online ? rdb.child(m.id).remove().catch(() => alert('No se pudo eliminar')) : (local.del(m.id), draw()) }; li.append(x) }
-    ul.append(li);
-  });
-  ul.scrollTop = ul.scrollHeight;
-}
-if(online){
-  firebase.initializeApp(FB);
-  auth = firebase.auth(); rdb = firebase.database().ref('comentarios');
-  auth.onAuthStateChanged(u => {
-    if(!u){ auth.signInAnonymously().catch(() => {}); return }
-    me = u.uid; admin = !u.isAnonymous; if(!admin) $('#panel').hidden = true; draw();
-  });
-  rdb.orderByChild('t').limitToLast(100).on('value', s => {
-    msgs = []; s.forEach(c => { msgs.push({id: c.key, ...c.val()}) }); draw();
-  });
-} else admin = sessionStorage.getItem('kk-admin') === '1';
-
-$('#nick').value = ls.get('kk-nick', '');
-/* foto de perfil del comentarista: se reduce a 64x64 y viaja con cada comentario */
-let myAv = ls.get('kk-av', '');
-const paintAv = () => { const e = $('#myAv'); e.style.backgroundImage = myAv ? `url("${myAv}")` : ''; e.childNodes[0].textContent = myAv ? '' : '+' };
+/* ---- perfil del chat (apodo + foto) ---- */
+let prof = ls.get('kk-prof', null) || {n: ls.get('kk-nick', ''), a: ls.get('kk-av', '')}, draftAv = '';
 const shrink = f => new Promise((ok, no) => { const img = new Image(), u = URL.createObjectURL(f);
   img.onload = () => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
     g.fillStyle = '#fff'; g.fillRect(0, 0, 64, 64); const s = Math.min(img.width, img.height);
     g.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 64, 64); URL.revokeObjectURL(u); ok(c.toDataURL('image/jpeg', .8)) };
   img.onerror = no; img.src = u });
-$('#avFile').onchange = async e => { const f = e.target.files[0]; if(!f) return;
-  try{ myAv = await shrink(f); ls.set('kk-av', myAv); paintAv() }catch{ alert('No pude leer esa imagen') } e.target.value = '' };
-paintAv();
-$('#chatForm').onsubmit = e => { e.preventDefault();
-  const n = $('#nick').value.trim(), x = $('#msg').value.trim(); if(!n || !x) return;
-  ls.set('kk-nick', n);
-  if(online){
-    if(!me) return alert('Conectando… intenta de nuevo en un segundo.');
-    rdb.push({n, x, t: firebase.database.ServerValue.TIMESTAMP, uid: me, ...(myAv ? {a: myAv} : {})}).catch(() => alert('No se pudo enviar el comentario'));
-  } else {
-    const id = Date.now() + '' + Math.random().toString(36).slice(2, 6);
-    mine.add(id); ls.set('kk-mine', [...mine]); local.push({id, n, x, t: Date.now(), ...(myAv ? {a: myAv} : {})}); draw();
+const paintMe = () => $$('.myav.me').forEach(e => { e.style.backgroundImage = prof.a ? `url("${prof.a}")` : ''; e.textContent = prof.a ? '' : (prof.n ? prof.n[0].toUpperCase() : '+') });
+const paintP = () => { const e = $('#pAv'); e.style.backgroundImage = draftAv ? `url("${draftAv}")` : ''; e.childNodes[0].textContent = draftAv ? '' : '+' };
+function openProfile(){ draftAv = prof.a; $('#pNick').value = prof.n; $('#pErr').hidden = true; paintP(); $('#profDlg').showModal() }
+$('#pFile').onchange = async e => { const f = e.target.files[0]; if(!f) return; try{ draftAv = await shrink(f); paintP() }catch{ alert('No pude leer esa imagen') } e.target.value = '' };
+$('#profForm').onsubmit = e => { e.preventDefault(); const n = $('#pNick').value.trim();
+  if(n.toLowerCase() === 'draxie'){ $('#pErr').textContent = 'Ese apodo está reservado ✧ (prueba "Draxie ✧")'; $('#pErr').hidden = false; return }
+  prof = {n, a: draftAv}; ls.set('kk-prof', prof); $('#profDlg').close(); paintMe() };
+$('#pCancel').onclick = () => $('#profDlg').close();
+$$('.myav.me').forEach(b => b.onclick = openProfile);
+
+/* ---- chats ---- */
+const FB = CF.firebase, online = !!(FB && FB.apiKey && window.firebase);
+let me = null, admin = false, member = false, db = null, auth = null, pubMsgs = [], gMsgs = [], cur = '';
+const mine = new Set(ls.get('kk-mine', []));
+const color = (n, l = 55) => `hsl(${[...n].reduce((h, c) => h * 31 + c.charCodeAt(0), 7) % 360} 65% ${l}%)`;
+const local = {load: () => ls.get('kk-chat', []), push: m => ls.set('kk-chat', [...local.load(), m].slice(-100)), del: id => ls.set('kk-chat', local.load().filter(m => m.id !== id))};
+const push = (path, d) => { if(!me) return Promise.reject(); const key = db.ref(path).push().key, T = firebase.database.ServerValue.TIMESTAMP;
+  return db.ref().update({[path + '/' + key]: {...d, t: T, uid: me}, ['limites/' + me]: T}) };
+
+function makeChat(o){
+  const bar = o.form.querySelector('.rbar'), msg = o.form.querySelector('.msgin'), tray = o.form.querySelector('.tray'), sb = o.form.querySelector('.stk-btn');
+  let reply = null, cool = 0;
+  const setReply = r => { reply = r; bar.hidden = !r; if(r) bar.querySelector('span').textContent = '↪ ' + r.n + ': ' + r.x };
+  bar.querySelector('button').onclick = () => setReply(null);
+  if(!CF.stickers.length) sb.hidden = true;
+  else { tray.innerHTML = CF.stickers.map(s => `<button type="button" data-s="${s}"><img src="${s}" alt="sticker"></button>`).join(''); sb.onclick = () => { tray.hidden = !tray.hidden } }
+  function post(extra){
+    if(!prof.n) return openProfile();
+    if(Date.now() < cool) return alert('Espera un momentito antes de enviar otro ✧');
+    const d = {n: prof.n, x: '', ...(prof.a ? {a: prof.a} : {}), ...(reply ? {r: reply} : {}), ...extra};
+    Promise.resolve(o.send(d)).then(() => { cool = Date.now() + 2500; setReply(null); draw() }).catch(() => alert('No se pudo enviar. Espera unos segundos e intenta de nuevo.'));
   }
-  $('#msg').value = '';
-};
+  tray.onclick = e => { const b = e.target.closest('button'); if(b){ tray.hidden = true; post({x: 'sticker', s: b.dataset.s}) } };
+  o.form.onsubmit = e => { e.preventDefault(); const x = msg.value.trim(); if(!x) return; msg.value = ''; post({x}) };
+  function draw(){
+    const ul = o.ul, all = o.list(); ul.innerHTML = '';
+    if(!all.length) ul.innerHTML = `<li class="empty">${o.empty}</li>`;
+    all.forEach(m => {
+      const own = o.isMine(m), li = document.createElement('li'), box = document.createElement('div'), b = document.createElement('b'), t = document.createElement('time'), acts = document.createElement('span');
+      li.className = 'c' + (o.wa && own ? ' mine' : ''); li.dataset.id = m.id; box.className = 'tx'; acts.className = 'acts';
+      let av;
+      if(m.a && /^data:image\/jpeg;base64,/.test(m.a)){ av = new Image(); av.src = m.a; av.alt = '' }
+      else { av = document.createElement('span'); av.textContent = (m.n || '?')[0].toUpperCase(); av.style.background = color(m.n || '?', 70) }
+      av.className = 'av';
+      if(m.r){ const q = document.createElement('a'); q.className = 'quote'; q.textContent = '↪ ' + m.r.n + ': ' + m.r.x;
+        q.onclick = () => { const s = ul.querySelector(`[data-id="${CSS.escape(String(m.r.i))}"]`); if(s){ s.scrollIntoView({block: 'center', behavior: 'smooth'}); s.classList.add('flash'); setTimeout(() => s.classList.remove('flash'), 1300) } };
+        box.append(q) }
+      b.textContent = m.n; b.style.color = color(m.n || '?'); t.textContent = new Date(m.t).toLocaleTimeString('es', {hour: '2-digit', minute: '2-digit'});
+      box.append(b, t, document.createElement('br'));
+      if(m.s && CF.stickers.includes(m.s)){ const s = new Image(); s.src = m.s; s.alt = 'sticker'; s.className = 'stk'; box.append(s) }
+      else box.append(document.createTextNode(m.x));
+      const rb = document.createElement('button'); rb.textContent = '↩'; rb.title = 'responder';
+      rb.onclick = () => { setReply({i: m.id, n: m.n, x: (m.s ? 'sticker' : m.x).slice(0, 60)}); msg.focus() }; acts.append(rb);
+      if(admin || own){ const x = document.createElement('button'); x.textContent = '✕'; x.title = 'eliminar';
+        x.onclick = () => Promise.resolve(o.remove(m.id)).then(draw).catch(() => alert('No se pudo eliminar')); acts.append(x) }
+      li.append(av, box, acts); ul.append(li);
+    });
+    ul.scrollTop = ul.scrollHeight;
+  }
+  return {draw};
+}
+const pub = makeChat({form: $('#chatForm'), ul: $('#msgs'), empty: 'aún no hay comentarios. ¡sé el primero! ✧',
+  list: () => online ? pubMsgs : local.load(), isMine: m => online ? m.uid === me : mine.has(m.id),
+  send: d => online ? push('comentarios', d) : (() => { const id = Date.now() + Math.random().toString(36).slice(2, 6); mine.add(id); ls.set('kk-mine', [...mine]); local.push({id, t: Date.now(), ...d}) })(),
+  remove: id => online ? db.ref('comentarios/' + id).remove() : local.del(id)});
+const gc = makeChat({form: $('#gForm'), ul: $('#gMsgs'), wa: true, empty: 'Nadie ha escrito todavía. ¡Rompe el hielo! 🧸',
+  list: () => gMsgs, isMine: m => m.uid === me, send: d => push('guarderia/mensajes', d), remove: id => db.ref('guarderia/mensajes/' + id).remove()});
+
+/* ---- avisos de comentarios nuevos ---- */
+let seen = ls.get('kk-seen', 0);
+const badge = () => { const n = cur === 'comentarios' ? 0 : pubMsgs.filter(m => m.t > seen && m.uid !== me).length; const b = $('#bComent'); b.hidden = !n; b.textContent = n > 9 ? '9+' : n };
+const markSeen = () => { const t = Math.max(0, ...pubMsgs.map(m => m.t || 0)); if(t){ seen = t; ls.set('kk-seen', t) } badge() };
+
+/* ---- botones de modo Draxie ---- */
+function ui(){
+  document.body.classList.toggle('admin', admin);
+  const b = $('#btnAdmin'); b.querySelector('span').textContent = admin ? '🚪' : '🔑'; b.querySelector('em').textContent = admin ? 'salir' : 'modo Draxie';
+  if(!admin) $('#panel').hidden = true;
+}
+let gRef = null;
+const subG = on => { if(gRef){ gRef.off(); gRef = null }
+  if(on){ gRef = db.ref('guarderia/mensajes').orderByChild('t').limitToLast(100);
+    gRef.on('value', s => { gMsgs = []; s.forEach(c => { gMsgs.push({id: c.key, ...c.val()}) }); gc.draw() }, () => {}) } };
+function sync(u){
+  me = u.uid; const real = !u.isAnonymous;
+  admin = real && (CF.adminEmail ? (u.email || '').toLowerCase() === CF.adminEmail.toLowerCase() : localStorage.getItem('kk-adm') === u.uid);
+  member = real && u.emailVerified;
+  $('#gOff').hidden = true; $('#gAuth').hidden = real; $('#gVerify').hidden = !real || member; $('#gChat').hidden = !member;
+  if(real){ $('#gMailShow').textContent = u.email; if(!prof.n && u.displayName){ prof.n = u.displayName; ls.set('kk-prof', prof); paintMe() } }
+  subG(member); ui(); pub.draw(); gc.draw(); badge();
+}
+if(online){
+  firebase.initializeApp(FB); auth = firebase.auth(); db = firebase.database();
+  auth.onAuthStateChanged(u => u ? sync(u) : auth.signInAnonymously().catch(() => {}));
+  db.ref('comentarios').orderByChild('t').limitToLast(100).on('value', s => {
+    pubMsgs = []; s.forEach(c => { pubMsgs.push({id: c.key, ...c.val()}) });
+    if(!ls.get('kk-seen', 0) || cur === 'comentarios') markSeen(); else badge();
+    pub.draw();
+  });
+} else { $('#gOff').hidden = false; admin = sessionStorage.getItem('kk-adm') === '1'; ui() }
+
+let reg = false;
+const ERR = {'auth/email-already-in-use': 'Ese correo ya tiene cuenta.', 'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres.', 'auth/invalid-email': 'Correo no válido.',
+  'auth/too-many-requests': 'Demasiados intentos, espera un rato.', nick: 'Elige un apodo de 2 a 16 letras.', reservado: 'Ese apodo está reservado ✧'};
+$('#gSwap').onclick = () => { reg = !reg; $('#gNickRow').hidden = !reg; $('#gGo').textContent = reg ? 'crear cuenta' : 'entrar'; $('#gSwap').textContent = reg ? 'ya tengo cuenta' : 'crear cuenta'; $('#gPass').autocomplete = reg ? 'new-password' : 'current-password' };
+$('#gAuth').onsubmit = async e => { e.preventDefault(); const er = $('#gErr'); er.hidden = true;
+  try{
+    const mail = $('#gMail').value.trim(), pass = $('#gPass').value;
+    if(reg){ const nk = $('#gNick').value.trim();
+      if(nk.length < 2) throw {code: 'nick'}; if(nk.toLowerCase() === 'draxie') throw {code: 'reservado'};
+      const c = await auth.createUserWithEmailAndPassword(mail, pass);
+      await c.user.updateProfile({displayName: nk}).catch(() => {}); await c.user.sendEmailVerification().catch(() => {});
+      prof.n = nk; ls.set('kk-prof', prof); paintMe(); sync(auth.currentUser);
+    } else await auth.signInWithEmailAndPassword(mail, pass);
+  }catch(x){ er.textContent = ERR[x.code] || 'Correo o contraseña incorrectos.'; er.hidden = false } };
+$('#gDone').onclick = async () => { const u = auth.currentUser;
+  try{ await u.reload(); await u.getIdToken(true) }catch{}
+  if(auth.currentUser.emailVerified) sync(auth.currentUser); else { $('#gVErr').textContent = 'Todavía no aparece verificado. Toca el enlace del correo y prueba otra vez.'; $('#gVErr').hidden = false } };
+$('#gResend').onclick = () => auth.currentUser.sendEmailVerification().then(() => alert('Correo reenviado ✧')).catch(() => alert('Espera un poco antes de reenviar.'));
+$$('[data-out]').forEach(b => b.onclick = () => auth.signOut());
+
 $('#btnAdmin').onclick = () => {
   if(online){ admin ? auth.signOut() : $('#login').showModal(); return }
-  if(admin) admin = false; else if(prompt('PIN de Draxie') === CONFIG.adminPin) admin = true;
-  sessionStorage.setItem('kk-admin', admin ? '1' : '0'); if(!admin) $('#panel').hidden = true; draw();
+  if(admin) admin = false; else if(prompt('PIN de Draxie') === CF.adminPin) admin = true;
+  sessionStorage.setItem('kk-adm', admin ? '1' : '0'); ui(); pub.draw();
 };
 $('#loginForm').onsubmit = async e => { e.preventDefault();
-  try{ await auth.signInWithEmailAndPassword($('#lEmail').value.trim(), $('#lPass').value); $('#login').close(); $('#lPass').value = '' }
+  try{ const c = await auth.signInWithEmailAndPassword($('#lEmail').value.trim(), $('#lPass').value);
+    localStorage.setItem('kk-adm', c.user.uid); $('#login').close(); $('#lPass').value = ''; sync(auth.currentUser) }
   catch{ $('#lErr').hidden = false } };
 $('#lCancel').onclick = () => $('#login').close();
-draw(); apply(); renderFotos();
+
+/* ---- canales (navegación) ---- */
+const CH = {inicio: ['inicio', 'bienvenid@ a mi rinconcito ✧'], notas: ['notas', 'mis notas y pensamientos'], fotos: ['fotos', 'cositas bonitas'],
+  informes: ['informes', 'mis informes'], comentarios: ['comentarios', 'deja tu comentario con tu apodo'], guarderia: ['guardería', 'chat para miembros 🧸'], privado: ['privado', 'solo con mi permiso']};
+function go(ch, save = true){
+  if(!CH[ch]) ch = 'inicio'; cur = ch;
+  $$('.view').forEach(v => { const on = v.id === 'v-' + ch; v.hidden = !on; v.classList.remove('in'); if(on){ void v.offsetWidth; v.classList.add('in') } });
+  $$('.ch').forEach(b => b.classList.toggle('on', b.dataset.ch === ch));
+  $('#chName').textContent = '# ' + CH[ch][0]; $('#chDesc').textContent = CH[ch][1];
+  $('#app').classList.remove('open');
+  if(save) history.replaceState(null, '', '#' + ch);
+  scrollTo({top: 0, behavior: 'smooth'});
+  if(ch === 'comentarios'){ markSeen(); pub.draw(); if(!prof.n) openProfile() }
+  if(ch === 'guarderia') gc.draw();
+}
+$('#chs').onclick = e => { const b = e.target.closest('.ch'); if(b) go(b.dataset.ch) };
+$('#btnMenu').onclick = () => $('#app').classList.toggle('open');
+$('#scrim').onclick = () => $('#app').classList.remove('open');
+paintMe(); renderFotos(); apply(); go(location.hash.slice(1) || 'inicio', false);
