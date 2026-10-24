@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://*.firebaseio.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://*.firebaseio.com; object-src 'none'; base-uri 'none'">
+<title>EL KINDER de kanela · Draxie</title>
+<meta name="description" content="Notas, fotos, informes y un chat con cariño. El rinconcito de Draxie.">
+<meta name="theme-color" content="#0e1716">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kanela"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:type" content="website"><meta property="og:title" content="EL KINDER de kanela"><meta property="og:description" content="Notas, fotos, informes y un chat con cariño.">
+<meta property="og:url" content="https://mocosconazucar.github.io/kanela/"><meta property="og:image" content="https://mocosconazucar.github.io/kanela/preview.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://mocosconazucar.github.io/kanela/preview.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Nunito:wght@400;600;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=DotGothic16&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="boot" aria-hidden="true"><div class="bt"><b>EL KINDER <em>de</em> kanela</b><pre><span>[  ok  ] cargando kanela os</span><span>[  ok  ] vidrio · estrellas · gotitas</span><span>[  ok  ] conectando comentarios</span></pre><div class="bp"><i></i></div></div></div>
+<div id="navbar"></div><div id="toasts" aria-live="polite"></div>
+<div id="bgfill"><div id="bgimg"></div></div>
+<div class="app" id="app">
+  <aside class="side glass" id="side">
+    <header class="srv">EL KINDER <small>de</small> kanela <span>✧˖°</span></header>
+    <nav id="chs" aria-label="Canales">
+      <div class="cat">˖ ✿ ✧ -- ○› bienvenida --┐</div>
+      <button class="ch on" data-ch="inicio"><span class="g">┊˖</span><b>♡</b><i>≥</i><span class="n">inicio</span></button>
+      <div class="cat">˖ ✿ ✧ -- ○› contenido --┐</div>
+      <button class="ch" data-ch="notas"><span class="g">┊˖</span><b>✎</b><i>≥</i><span class="n">notas</span></button>
+      <button class="ch" data-ch="fotos"><span class="g">┊˖</span><b>✦</b><i>≥</i><span class="n">fotos</span></button>
+      <button class="ch" data-ch="informes"><span class="g">┊˖</span><b>◇</b><i>≥</i><span class="n">informes</span></button>
+      <div class="cat">˖ ✿ ✧ -- ○› lobby --┐</div>
+      <button class="ch" data-ch="comentarios"><span class="g">┊˖</span><b>☾</b><i>≥</i><span class="n">comentarios</span><u class="badge" id="bComent" hidden></u></button>
+      <button class="ch" data-ch="guarderia"><span class="g">┊˖</span><b>❀</b><i>≥</i><span class="n">guardería</span></button>
+      <button class="ch" data-ch="privado"><span class="g">┊˖</span><b>⋆</b><i>≥</i><span class="n">privado</span></button>
+    </nav>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="top glass">
+      <button id="btnMenu" class="ib menuBtn" aria-label="Canales"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <nav class="ws" id="ws" aria-label="Espacios"></nav>
+      <h1 id="chName"># inicio</h1><p id="chDesc"></p>
+      <div class="acts2">
+        <span class="mono" id="topClock"></span>
+        <button id="btnBell" class="ib" title="avisos de mensajes" aria-label="avisos de mensajes"><svg viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button>
+        <button id="btnFx" class="ib" title="efectos" aria-label="efectos" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg></button>
+        <button id="btnCustom" class="ib only-admin" title="personalizar" aria-label="personalizar"><svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
+        <button id="btnAdmin" class="ib" title="modo Draxie" aria-label="modo Draxie"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg></button>
+      </div>
+    </header>
+
+    <main>
+      <section id="v-inicio" class="view">
+        <article class="hero glass">
+          <div class="banner" id="banner"><span class="wm" aria-hidden="true">KANELA</span><div class="ttl"><small class="mono">// bienvenid@ al kinder</small><h2 class="title">EL KINDER <em>de</em> kanela</h2><span class="kao">(๑˃ᴗ˂)ﻭ</span></div></div>
+          <div class="who">
+            <div class="avatar"><img id="avImg" alt="Foto de Draxie" hidden><i class="dot"></i></div>
+            <div class="bubble"><span id="estado"></span><button id="mood" class="link" title="cambiar mood">(˶ᵔ ᵕ ᵔ˶)</button></div>
+          </div>
+          <h2 class="nm"><span id="nombre"></span> <small id="usuario"></small></h2>
+          <p class="err small" id="avErr" hidden></p>
+          <div class="chips" id="redes"></div>
+        </article>
+        <div class="bento">
+          <article class="glass card term a-term"><div class="tbar"><i></i><i></i><i></i><span>sobre-mi.txt — draxie@kanela</span></div><pre id="term" aria-label="sobre mí"></pre></article>
+          <article class="glass card clock a-clock"><b id="hora"></b><span id="fecha"></span></article>
+          <article class="glass card nf a-nf" id="nf"></article>
+          <article class="glass card a-stats"><h3>telemetría</h3><div id="stats"></div></article>
+          <article class="glass card pet a-pet">
+            <div class="pbox plog" id="plog" aria-live="polite"></div>
+            <div class="pbox pface"><div class="ptag"><b id="pname">KANELA // TALKING</b><em>● CONNECTED</em></div>
+              <svg class="face" id="face" data-m="happy" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="66" r="40" fill="#efd3b1"/>
+              <path d="M60 26c-20 0-26 22-6 25 15 2 18-14 5-14-9 0-10 9-3 9" fill="none" stroke="#c98f5e" stroke-width="4.5" stroke-linecap="round"/>
+              <ellipse class="eye" cx="45" cy="68" rx="4.2" ry="6" fill="#2a211d"/><ellipse class="eye" cx="75" cy="68" rx="4.2" ry="6" fill="#2a211d"/>
+              <ellipse cx="37" cy="80" rx="6.5" ry="3.8" fill="#ff9ccb" opacity=".65"/><ellipse cx="83" cy="80" rx="6.5" ry="3.8" fill="#ff9ccb" opacity=".65"/>
+              <path class="mouth" d="M53 82q7 7 14 0" fill="none" stroke="#2a211d" stroke-width="3" stroke-linecap="round"/>
+              <text class="zzz" x="90" y="34" font-size="14" fill="#8ea39d">z z</text></svg></div>
+            <form class="pbox pin" id="pform"><span>&gt;_</span><input id="pcmd" class="pcmd" placeholder="escribe 'help' para ver comandos..." autocomplete="off" maxlength="40" aria-label="comandos"></form>
+          </article>
+          <article class="glass card a-notas"><h3>últimas notas</h3><div id="ultimas"></div></article>
+        </div>
+      </section>
+
+      <section id="v-notas" class="view" hidden><div id="notas"></div></section>
+
+      <section id="v-fotos" class="view" hidden>
+        <div class="glass card">
+          <label class="pill only-admin">+ agregar fotos <input id="fotoFile" type="file" accept="image/*" multiple hidden></label>
+          <div class="grid" id="fotos"></div>
+        </div>
+      </section>
+
+      <section id="v-informes" class="view" hidden><div class="glass card"><div id="informes"></div></div></section>
+
+      <section id="v-comentarios" class="view" hidden>
+        <div class="chat glass">
+          <ul id="msgs" class="msgs" aria-live="polite"></ul>
+          <form id="chatForm" class="cform">
+            <div class="rbar" hidden><span></span><button type="button" title="cancelar">✕</button></div>
+            <div class="row"><button type="button" class="myav me" title="tu perfil">+</button>
+              <input class="msgin inp" placeholder="escribe un comentario…" maxlength="200" autocomplete="off">
+              <button type="button" class="ib stk-btn" title="stickers" aria-label="stickers"><svg viewBox="0 0 24 24"><path d="M5 4h14v10l-6 6H5z"/><path d="M13 20v-6h6"/><circle cx="9.5" cy="9.5" r=".7"/><circle cx="14.5" cy="9.5" r=".7"/></svg></button>
+              <button class="ib send" title="enviar" aria-label="enviar"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button></div>
+            <div class="tray" hidden></div>
+          </form>
+        </div>
+      </section>
+
+      <section id="v-guarderia" class="view" hidden>
+        <div class="glass card" id="gOff" hidden><p>La guardería necesita Firebase configurado.</p></div>
+        <form id="gAuth" class="glass card" hidden>
+          <h3>guardería ♡</h3>
+          <p>Chat solo para miembros. Tu correo no se muestra: aquí te ven con tu apodo.</p>
+          <label>correo <input class="inp" id="gMail" type="email" required autocomplete="email"></label>
+          <label>contraseña <input class="inp" id="gPass" type="password" minlength="6" required autocomplete="current-password"></label>
+          <label id="gNickRow" hidden>apodo <input class="inp" id="gNick" maxlength="16" minlength="2"></label>
+          <p class="err" id="gErr" hidden></p>
+          <button class="pill" id="gGo">entrar</button> <button type="button" class="link" id="gSwap">crear cuenta</button>
+        </form>
+        <div class="glass card" id="gVerify" hidden>
+          <h3>verifica tu correo</h3>
+          <p>Te enviamos un correo a <b id="gMailShow"></b>. Ábrelo, toca el enlace (mira también en spam) y vuelve aquí.</p>
+          <p class="err" id="gVErr" hidden></p>
+          <button class="pill" id="gDone">ya verifiqué ✓</button> <button class="pill" id="gResend">reenviar correo</button> <button class="link" data-out type="button">salir</button>
+        </div>
+        <div class="chat glass wa" id="gChat" hidden>
+          <div class="ghead"><span>guardería</span><button class="link" data-out type="button">salir</button></div>
+          <ul id="gMsgs" class="msgs" aria-live="polite"></ul>
+          <form id="gForm" class="cform">
+            <div class="rbar" hidden><span></span><button type="button" title="cancelar">✕</button></div>
+            <div class="row"><button type="button" class="myav me" title="tu perfil">+</button>
+              <input class="msgin inp" placeholder="escribe un mensaje…" maxlength="300" autocomplete="off">
+              <button type="button" class="ib stk-btn" title="stickers" aria-label="stickers"><svg viewBox="0 0 24 24"><path d="M5 4h14v10l-6 6H5z"/><path d="M13 20v-6h6"/><circle cx="9.5" cy="9.5" r=".7"/><circle cx="14.5" cy="9.5" r=".7"/></svg></button>
+              <button class="ib send" title="enviar" aria-label="enviar"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button></div>
+            <div class="tray" hidden></div>
+          </form>
+        </div>
+      </section>
+
+      <section id="v-privado" class="view" hidden>
+        <div class="glass card">
+          <h3>zona privada ♡</h3>
+          <p>Los informes de aquí solo los ve quien tenga mi permiso.</p>
+          <div id="lock">
+            <label>código de acceso <input class="inp" id="code" type="password" autocomplete="off"></label>
+            <button class="pill" id="btnUnlock">entrar</button>
+            <p class="err" id="codeErr" hidden>Código incorrecto.</p>
+            <p><a id="pedir" href="#">pedir acceso a Draxie</a></p>
+          </div>
+          <div id="unlocked" hidden><p>Acceso concedido ✧</p><a id="driveLink" class="pill" target="_blank" rel="noopener">abrir carpeta de Drive</a></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<aside id="panel" class="glass" hidden>
+  <h3>personalizar</h3>
+  <p class="small">Sirve cualquier imagen: PNG, JPG, GIF, WEBP.</p>
+  <label>fondo <select id="bgPreset" class="inp"></select></label>
+  <label>o un color <input type="color" id="bgColor" value="#f7d9e8"></label>
+  <label>o tu imagen / GIF de fondo <input type="file" id="bgFile" accept="image/*"></label>
+  <button class="pill" data-del="bg">quitar mi fondo</button>
+  <label>banner <input type="file" id="bannerFile" accept="image/*"></label>
+  <button class="pill" data-del="banner">quitar banner</button>
+  <label>foto de perfil <input type="file" id="avatarFile" accept="image/*"></label>
+  <button class="pill" data-del="avatar">quitar foto</button>
+  <label>opacidad de la foto de fondo <input type="range" id="bgOp" min="10" max="100" value="50"></label>
+  <label>color de acento <input type="color" id="accent" value="#ff7eb6"></label>
+  <p class="small" id="panelMsg"></p>
+  <div class="row"><button class="pill" id="reset">restablecer</button><button class="pill" id="closePanel">cerrar</button></div>
+</aside>
+
+<dialog id="login"><form id="loginForm" class="glass dlg">
+  <h3>modo Draxie</h3>
+  <label>correo <input class="inp" id="lEmail" type="email" required autocomplete="username"></label>
+  <label>contraseña <input class="inp" id="lPass" type="password" required autocomplete="current-password"></label>
+  <p class="err" id="lErr" hidden>Correo o contraseña incorrectos.</p>
+  <div class="row"><button class="pill">entrar</button><button class="pill" type="button" id="lCancel">cancelar</button></div>
+</form></dialog>
+
+<dialog id="profDlg"><form id="profForm" class="glass dlg">
+  <h3>tu perfil en el chat ✧</h3>
+  <label class="myav big" id="pAv">+<input id="pFile" type="file" accept="image/*" hidden></label>
+  <input class="inp" id="pNick" placeholder="tu apodo" maxlength="16" minlength="2" required>
+  <p class="err small" id="pErr" hidden></p>
+  <div class="row"><button class="pill">guardar</button><button class="pill" type="button" id="pCancel">ahora no</button></div>
+</form></dialog>
+
+<dialog id="lb"><div class="dossier glass">
+  <button class="ib dclose" id="lbClose" aria-label="cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <figure class="dfig"><img id="lbImg" alt="">
+    <button class="ib dprev" id="lbPrev" aria-label="anterior"><svg viewBox="0 0 24 24"><path d="M14 6l-6 6 6 6"/></svg></button>
+    <button class="ib dnext" id="lbNext" aria-label="siguiente"><svg viewBox="0 0 24 24"><path d="M10 6l6 6-6 6"/></svg></button></figure>
+  <div class="dinfo">
+    <small class="mono">// FOTO <span id="lbN"></span></small>
+    <h2 id="lbTitle"></h2><p id="lbDesc"></p>
+    <form id="lbEdit" hidden><input class="inp" id="lbT" placeholder="título" maxlength="60"><textarea class="inp" id="lbD" rows="4" placeholder="descripción" maxlength="400"></textarea><button class="pill">guardar</button></form>
+    <div class="dmeta mono"><span>archivo</span><b id="lbSrc"></b></div>
+    <div class="barcode" aria-hidden="true"></div>
+  </div></div></dialog>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
+<script src="fx.js"></script>
+</body>
+</html>

@@ -5,7 +5,8 @@ const ls = {
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true }catch{ return false } }
 };
 const say = t => { $('#panelMsg').textContent = t };
-const DEF_CODE = ['$ whoami', 'draxie ✧', '$ cat sobre-mi.txt', 'escribo notas, guardo informes y colecciono cosas bonitas', '$ ./kanela --start', '[ok] interfaz de vidrio ...... listo', '[ok] estrellas y luciérnagas . listo', '[ok] gotitas de agua ......... listo', '$ echo "tengo sueño"', 'tengo sueño'];
+const bioLine = CONFIG.bio && !CONFIG.bio.includes('aquí tu texto') ? CONFIG.bio : 'escribo notas, guardo informes y colecciono cosas bonitas';
+const DEF_CODE = ['$ whoami', CONFIG.nombre.toLowerCase() + ' ✧', '$ cat sobre-mi.txt', bioLine, '$ ./kanela --start', '[ok] interfaz de vidrio ...... listo', '[ok] estrellas y luciérnagas . listo', '[ok] gotitas de agua ......... listo', '$ echo "tengo sueño"', 'tengo sueño'];
 const CF = {fondo: '', cancion: 'kanela.fm', stats: null, codigo: DEF_CODE, neofetch: null, estado: '✧ bienvenid@ a mi kinder', usuario: '', desde: '', stickers: [], notas: [], fotos: [], informes: [], redes: [], ...CONFIG};
 
 /* ---- imágenes guardadas en el navegador (IndexedDB) ---- */
@@ -22,8 +23,7 @@ const probe = src => new Promise(ok => { const i = new Image(); i.onload = () =>
 
 /* ---- contenido ---- */
 $('#nombre').textContent = CF.nombre; $('#usuario').textContent = CF.usuario;
-$('#bio').textContent = CF.bio; $('#estado').textContent = CF.estado + ' ';
-$('#desde').textContent = CF.desde ? 'miembro desde ' + CF.desde : '';
+$('#estado').textContent = CF.estado + ' ';
 const ICO = {
   instagram: '<rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17.2" cy="6.8" r=".5"/>',
   tiktok: '<path d="M14 4v10.5a3.4 3.4 0 1 1-3.4-3.4"/><path d="M14 4c.4 2.4 1.9 3.9 4.2 4.2"/>',
@@ -285,11 +285,9 @@ $('#scrim').onclick = () => $('#app').classList.remove('open');
 /* ---- decoración estilo terminal / Linux ---- */
 $('#ws').innerHTML = Object.keys(CH).map(k => `<button data-ch="${k}" title="${CH[k][0]}" aria-label="${CH[k][0]}"></button>`).join('');
 $('#ws').onclick = e => { const b = e.target.closest('button'); if(b) go(b.dataset.ch) };
-const NF = CF.neofetch || [['os', 'kanela linux'], ['host', CF.nombre], ['shell', 'cute.sh'], ['wm', 'glass-wm'], ['tema', 'pastel · vidrio'], ['mood', '(˶ᵔ ᵕ ᵔ˶)']];
+const NF = CF.neofetch || [['os', 'kanela linux'], ['host', CF.nombre], ['shell', 'cute.sh'], ['wm', 'glass-wm'], ['tema', 'pastel · vidrio'], ['mood', '(˶ᵔ ᵕ ᵔ˶)'], ...(CF.desde ? [['desde', CF.desde]] : [])];
 $('#nf').innerHTML = `<b>${CF.nombre.toLowerCase()}@kanela</b><hr>` + NF.map(([a, v]) => `<div><span>${a}</span>${v}</div>`).join('') +
   '<div class="pal">' + ['#ff7eb6', '#b79ce6', '#a9cdf5', '#a8e6cf', '#ffd3a5', '#ffffff'].map(c => `<i style="background:${c}"></i>`).join('') + '</div>';
-$('#bars').innerHTML = Array.from({length: 22}, () => `<span style="animation-duration:${(.6 + Math.random() * 1).toFixed(2)}s;animation-delay:-${(Math.random() * 2).toFixed(2)}s"></span>`).join('');
-$('#song').textContent = '♪ cava · ' + CF.cancion;
 (async function typeLoop(){
   const el = $('#term'), L = CF.codigo, sl = ms => new Promise(r => setTimeout(r, ms)), cls = l => l[0] === '$' ? 'cmd' : l.startsWith('[ok]') ? 'ok' : '';
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){ el.innerHTML = ''; L.forEach(l => { const d = document.createElement('div'); d.className = cls(l); d.textContent = l; el.append(d) }); return }
@@ -327,5 +325,40 @@ if(sessionStorage.getItem('kk-boot')) $('#boot').remove();
 else { sessionStorage.setItem('kk-boot', '1'); const hide = () => { const b = $('#boot'); if(b){ b.classList.add('done'); setTimeout(() => b.remove(), 900) } };
   addEventListener('load', () => setTimeout(hide, 1500)); setTimeout(hide, 4500) }
 if('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+
+/* ---- mascota: terminal con carita animada ---- */
+(() => {
+  const face = $('#face'), log = $('#plog'), name = (CF.mascota || 'kanela').toLowerCase();
+  $('#pname').textContent = name.toUpperCase() + ' // TALKING';
+  const rm = matchMedia('(prefers-reduced-motion: reduce)').matches, sl = ms => new Promise(r => setTimeout(r, ms));
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim(), pick = a => a[Math.floor(Math.random() * a.length)];
+  let tok = 0;
+  const line = (cls, txt) => { const d = document.createElement('div'); d.className = cls; d.textContent = txt; log.append(d); while(log.children.length > 40) log.firstChild.remove(); log.scrollTop = log.scrollHeight; return d };
+  async function say(txt, mood = 'happy'){
+    const my = ++tok; face.dataset.m = mood; const d = line('k', name.toUpperCase() + ' > '), t = document.createElement('span'); t.className = 't'; d.append(t);
+    if(rm){ t.textContent = txt; return }
+    face.classList.add('talk');
+    for(const c of txt){ if(my !== tok) return; t.textContent += c; log.scrollTop = log.scrollHeight; await sl(22) }
+    face.classList.remove('talk'); await sl(4500); if(my === tok) face.dataset.m = 'happy';
+  }
+  const GO = {notas: 'notas', fotos: 'fotos', informes: 'informes', comentarios: 'comentarios', guarderia: 'guarderia', privado: 'privado', inicio: 'inicio'};
+  const R = {
+    help: () => say('comandos: hola · quien · sueno · cafe · abrazo · chiste · notas · fotos · comentarios · guarderia · limpiar'),
+    hola: () => say('holaaa, bienvenid@ al kinder (˶ᵔ ᵕ ᵔ˶)'),
+    quien: () => say(`soy ${name}, la mascota de ${CF.nombre}. vivo dentro de este terminal`),
+    sueno: () => say('zzz... yo también tengo sueñoooo', 'sleepy'),
+    cafe: () => say('nivel de café: bajo. necesito un cafecito urgente', 'wow'),
+    abrazo: () => say('(づ｡◕‿‿◕｡)づ abrazo enviado'),
+    chiste: () => say(pick(['¿por qué los programadores confunden halloween con navidad? porque oct 31 = dec 25', 'me dijeron que usara arch... btw ya lo uso', 'un commit sin mensaje es un abrazo sin cariño'])),
+    sudo: () => say('buen intento, pero aquí mando yo ✧', 'wow'),
+    limpiar: () => { log.innerHTML = ''; tok++; face.classList.remove('talk') }
+  };
+  R.whoami = R.quien; R.clear = R.limpiar; R.sueño = R.sueno; R.hi = R.hola;
+  $('#pform').onsubmit = e => { e.preventDefault(); const raw = $('#pcmd').value.trim(); if(!raw) return; $('#pcmd').value = ''; line('u', '> tú: ' + raw);
+    const c = norm(raw);
+    if(GO[c]){ say(`abriendo #${c}...`); setTimeout(() => go(GO[c]), 800) } else if(R[c]) R[c](); else say(`no entiendo '${raw.slice(0, 24)}'. escribe help`, 'wow') };
+  face.onclick = () => say(pick(['hehe, me haces cosquillas', '(˶ᵔ ᵕ ᵔ˶)', 'más cafecito por favor']), 'wow');
+  setTimeout(() => say('hola, soy ' + name + '. escribe help para ver comandos'), 900);
+})();
 
 paintMe(); renderFotos(); apply(); go(location.hash.slice(1) || 'inicio', false);
