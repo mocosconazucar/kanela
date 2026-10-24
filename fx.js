@@ -9,7 +9,7 @@
   let W, H, stars = [], flies = [], cols = [], B = [], F = [];
   const RC = 'ｱｲｳｴｵｶｷｸ01{}<>/;=+*kanela♡';
   const spr = document.createElement('canvas'); spr.width = spr.height = 40;
-  { const g = spr.getContext('2d'), r = g.createRadialGradient(20, 20, 0, 20, 20, 20); r.addColorStop(0, 'rgba(255,248,190,1)'); r.addColorStop(.35, 'rgba(255,205,235,.55)'); r.addColorStop(1, 'rgba(255,205,235,0)'); g.fillStyle = r; g.fillRect(0, 0, 40, 40) }
+  { const g = spr.getContext('2d'), r = g.createRadialGradient(20, 20, 0, 20, 20, 20); r.addColorStop(0, 'rgba(220,255,240,1)'); r.addColorStop(.35, 'rgba(120,230,200,.5)'); r.addColorStop(1, 'rgba(120,230,200,0)'); g.fillStyle = r; g.fillRect(0, 0, 40, 40) }
   const size = () => { W = back.width = front.width = innerWidth; H = back.height = front.height = innerHeight;
     stars = Array.from({length: small ? 45 : 95}, () => ({x: R(0, W), y: R(0, H), s: Math.random() < .25 ? 3 : 2, ph: R(0, 6.3), sp: R(.02, .05), p: Math.random() < .3}));
     flies = Array.from({length: small ? 7 : 14}, () => ({x: R(0, W), y: R(0, H), a: R(0, 6.3), ph: R(0, 6.3), r: R(.5, 1)}));
@@ -29,11 +29,11 @@
     const dt = Math.min(now - last, 50) / 16.67; last = now;
     gb.clearRect(0, 0, W, H); gf.clearRect(0, 0, W, H);
     if(!on) return;
-    gb.font = '14px "JetBrains Mono",monospace'; gb.fillStyle = '#fff0f8';
+    gb.font = '14px "JetBrains Mono",monospace'; gb.fillStyle = '#d4fff3';
     for(let i = 0; i < cols.length; i++){ const c = cols[i]; if(!c.on) continue; c.y += c.v * dt; if(c.y - c.len * 16 > H){ c.y = R(-200, 0); c.v = R(.8, 2) }
-      for(let k = 0; k < c.len; k++){ const y = c.y - k * 16; if(y < -16 || y > H) continue; gb.globalAlpha = (1 - k / c.len) * .24; gb.fillText(RC[(Math.floor(y / 16) * 7 + i * 3) % RC.length], c.x, y) } }
+      for(let k = 0; k < c.len; k++){ const y = c.y - k * 16; if(y < -16 || y > H) continue; gb.globalAlpha = (1 - k / c.len) * .32; gb.fillText(RC[(Math.floor(y / 16) * 7 + i * 3) % RC.length], c.x, y) } }
     for(const s of stars){ s.ph += s.sp * dt; const a = .25 + .75 * (.5 + .5 * Math.sin(s.ph)), x = Math.round(s.x), y = Math.round(s.y), n = s.s;
-      gb.globalAlpha = a; gb.fillStyle = s.p ? '#ffd0ea' : '#fff'; gb.fillRect(x - n, y, 2 * n + 1, 1); gb.fillRect(x, y - n, 1, 2 * n + 1); gb.fillRect(x, y, 2, 2) }
+      gb.globalAlpha = a; gb.fillStyle = s.p ? '#bff5e5' : '#fff'; gb.fillRect(x - n, y, 2 * n + 1, 1); gb.fillRect(x, y - n, 1, 2 * n + 1); gb.fillRect(x, y, 2, 2) }
     for(const f of flies){ f.a += R(-.06, .06) * dt; f.x += Math.cos(f.a) * .35 * dt; f.y += Math.sin(f.a) * .35 * dt; f.ph += .03 * dt;
       if(f.x < -20) f.x = W + 20; if(f.x > W + 20) f.x = -20; if(f.y < -20) f.y = H + 20; if(f.y > H + 20) f.y = -20;
       gb.globalAlpha = .35 + .65 * (.5 + .5 * Math.sin(f.ph)); const z = 40 * f.r; gb.drawImage(spr, f.x - z / 2, f.y - z / 2, z, z) }

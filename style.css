@@ -2,7 +2,7 @@
 *{box-sizing:border-box}[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;font:15px/1.55 Nunito,system-ui,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
-#bgfill{position:fixed;inset:-40px;z-index:-2;background:radial-gradient(60% 50% at 12% 8%,#e9b5cf,transparent 70%),radial-gradient(50% 50% at 92% 18%,#b9a5e0,transparent 70%),radial-gradient(60% 60% at 70% 98%,#9fbfe6,transparent 70%),linear-gradient(160deg,#dba9c6,#b9a3d6 55%,#a4bddf);background-size:cover;filter:blur(12px) saturate(.85)}
+#bgfill{position:fixed;inset:0;z-index:-2}
 a{color:var(--pink)}h3{margin:0 0 6px;font:12px 'DotGothic16',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
 .small{font-size:12px}.err{color:#c23468}.link{background:none;border:0;font:inherit;color:var(--pink);cursor:pointer;padding:0}
 :focus-visible{outline:2px solid var(--pink);outline-offset:2px}
@@ -121,3 +121,49 @@ body.admin .ib.only-admin{display:inline-grid!important}.menuBtn{display:none}
 @keyframes bar{from{transform:scaleY(.12)}to{transform:scaleY(1)}}
 .row .ib{width:40px;height:40px}
 @media(max-width:860px){.menuBtn{display:inline-grid}.ws,.top .mono{display:none}.top h1{font-size:22px}}
+
+/* ===== paleta grafito estilo ryoku ===== */
+:root{--ink:#dbe5e2;--ink2:#8ea39d;--pink:#6fd3b9;--lilac:#3d8f80;--glass:rgba(16,24,23,.58);--glass2:rgba(255,255,255,.07);--line:rgba(120,190,175,.24);--sh:0 10px 40px rgba(0,0,0,.35)}
+#bgfill{background:radial-gradient(60% 50% at 15% 10%,#1d3a35,transparent 70%),radial-gradient(50% 50% at 90% 20%,#2a3338,transparent 70%),radial-gradient(60% 60% at 70% 98%,#17302d,transparent 70%),linear-gradient(160deg,#0f1a19,#131d1f 55%,#0c1415)}
+#bgimg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.5;transition:opacity .3s;filter:saturate(.8)}
+body::before{background:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.3))}
+.glass{border-radius:16px}
+.srv{font:700 17px 'Space Grotesk',sans-serif;letter-spacing:-.01em;border-bottom-color:var(--line)}.srv small{font:italic 400 1.15em 'Instrument Serif',serif;color:var(--pink)}
+.ch.on{background:linear-gradient(135deg,var(--pink),var(--lilac));color:#06201b;box-shadow:0 6px 16px #6fd3b933}.ch.on b,.ch.on .g,.ch.on i{color:#06201b}
+.pill:hover,.ib:hover,.ib.on{color:#06201b}
+.inp{background:rgba(255,255,255,.06);color:var(--ink)}.inp::placeholder{color:var(--ink2)}textarea.inp{border-radius:14px;resize:vertical}option{color:#111}
+.bubble,.bubble::before{background:#17211f;color:var(--ink)}.avatar,.dot{border-color:#17211f}.avatar{background:#22302d}
+.dlg{background:rgba(14,22,21,.94)}
+.wa .c{background:rgba(255,255,255,.07)}.wa .c.mine{background:rgba(111,211,185,.16)}.wa .msgs{background:transparent}.c:hover{background:rgba(255,255,255,.05)}
+.rbar{background:rgba(255,255,255,.07)}.rbar button{color:var(--ink)}.tray button{background:rgba(255,255,255,.06)}.tbar{background:rgba(255,255,255,.05)}
+.grid img,.grid div{border:1px solid var(--line);border-radius:12px}.grid .x{background:#000a;color:#ff9a9a}
+.err{color:#ff9a9a}.flash{background:rgba(111,211,185,.18)!important}.nota{border-bottom-color:var(--line)}.nf hr{border-color:var(--line)}
+#term div.cmd{color:var(--pink)}#term div.ok{color:#8be0a4}
+h3{font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em}h3::before{content:'// ';color:var(--pink)}
+.card{position:relative}.card::before,.card::after{content:'+';position:absolute;font:12px 'JetBrains Mono',monospace;color:var(--pink);opacity:.55}.card::before{top:5px;left:9px}.card::after{bottom:3px;right:9px}
+.mention{color:var(--pink);font-weight:800}.mention.me{background:rgba(111,211,185,.2);padding:0 5px;border-radius:6px}.quote b{color:var(--ink)}
+/* banner */
+.banner{position:relative;overflow:hidden;place-items:end start;padding:22px}.banner::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(8,14,13,.05),rgba(8,14,13,.72))}
+.banner>*{position:relative}.banner .wm{position:absolute;right:14px;top:-8px;font:700 clamp(80px,17vw,200px)/1 'Space Grotesk',sans-serif;color:#fff;opacity:.06;pointer-events:none;letter-spacing:-.04em}
+.ttl{display:grid;gap:4px}.title{font:700 clamp(34px,7vw,76px)/1 'Space Grotesk',sans-serif;letter-spacing:-.03em;color:#eef6f3;background:none;border:0;backdrop-filter:none;padding:0;text-align:left;text-shadow:0 2px 26px #000a}
+.title em{font:italic 400 .52em 'Instrument Serif',serif;color:var(--pink);letter-spacing:0}.ttl .mono{color:var(--pink)}.ttl .kao{font-size:15px;color:var(--ink2);justify-self:start}
+.chip b{width:28px;height:28px;background:var(--pink);color:#06201b}.chip b svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.viz .bars{height:54px}.st{display:grid;grid-template-columns:86px 1fr 38px;gap:8px;align-items:center;font:12px 'JetBrains Mono',monospace;margin:5px 0}.st i{height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden}.st u{display:block;height:100%;background:var(--pink);transition:width 1s}.st b{text-align:right;font-weight:600}
+/* foto: ficha estilo dossier */
+dialog#lb{max-width:min(980px,94vw);width:100%}.dossier{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);overflow:hidden;position:relative;background:rgba(10,17,16,.94)}
+.dfig{margin:0;position:relative;background:#070d0c;display:grid;place-items:center;min-height:300px}.dfig img{max-width:100%;max-height:80vh;border-radius:0;display:block;object-fit:contain}
+.dprev,.dnext{position:absolute;top:50%;transform:translateY(-50%)}.dprev{left:10px}.dnext{right:10px}.dprev:hover,.dnext:hover{transform:translateY(-50%) scale(1.08)}
+.dinfo{padding:22px 20px;display:flex;flex-direction:column;gap:10px;border-left:1px solid var(--line)}.dinfo h2{margin:0;font:700 28px/1.1 'Space Grotesk',sans-serif;padding-right:40px}.dinfo p{margin:0;white-space:pre-wrap}
+.dmeta{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin-top:auto}.dmeta span{color:var(--pink)}#lbEdit{display:grid;gap:6px}
+.barcode{height:30px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 9px);opacity:.4}.dclose{position:absolute;top:10px;right:10px;z-index:2}
+/* avisos, carga, transición */
+#toasts{position:fixed;top:78px;right:14px;display:grid;gap:8px;z-index:60;width:min(320px,90vw)}
+.toast{background:rgba(14,22,21,.94);border:1px solid var(--line);border-left:3px solid var(--pink);border-radius:10px;padding:8px 12px;font:12.5px/1.4 'JetBrains Mono',monospace;cursor:pointer;animation:vin .35s both;word-break:break-word}.toast b{display:block;color:var(--pink)}
+#navbar{position:fixed;top:0;left:0;height:2px;width:0;background:var(--pink);z-index:99;box-shadow:0 0 10px var(--pink);pointer-events:none}#navbar.go{animation:nl .5s ease forwards}
+@keyframes nl{from{width:0;opacity:1}75%{width:100%;opacity:1}to{width:100%;opacity:0}}
+#boot{position:fixed;inset:0;z-index:100;background:#0b1211;display:grid;place-items:center;transition:opacity .6s,visibility .6s;color:var(--ink)}#boot.done{opacity:0;visibility:hidden}
+.bt b{font:700 clamp(26px,6vw,44px) 'Space Grotesk',sans-serif;letter-spacing:-.02em}.bt em{font:italic 400 .6em 'Instrument Serif',serif;color:var(--pink)}
+.bt pre{font:12.5px/1.8 'JetBrains Mono',monospace;color:var(--ink2);margin:14px 0 0}.bt pre span{display:block;opacity:0;animation:vin .4s forwards}.bt pre span:nth-child(1){animation-delay:.2s}.bt pre span:nth-child(2){animation-delay:.6s}.bt pre span:nth-child(3){animation-delay:1s}
+.bp{height:3px;width:min(320px,70vw);margin-top:14px;background:#ffffff1a;border-radius:3px;overflow:hidden}.bp i{display:block;height:100%;width:0;background:var(--pink);animation:fillbar 1.5s ease forwards}@keyframes fillbar{to{width:100%}}
+.view.in{animation:vscan .5s cubic-bezier(.2,.8,.2,1) both}@keyframes vscan{from{opacity:0;clip-path:inset(0 0 100% 0);transform:translateY(8px)}to{opacity:1;clip-path:inset(-60px);transform:none}}
+@media(max-width:860px){.dossier{grid-template-columns:1fr}.dfig img{max-height:48vh}.dinfo{border-left:0;border-top:1px solid var(--line)}.title{font-size:clamp(30px,10vw,52px)}}

@@ -5,11 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://*.firebaseio.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://*.firebaseio.com; object-src 'none'; base-uri 'none'">
 <title>EL KINDER de kanela · Draxie</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=DotGothic16&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<meta name="description" content="Notas, fotos, informes y un chat con cariño. El rinconcito de Draxie.">
+<meta name="theme-color" content="#0e1716">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kanela"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:type" content="website"><meta property="og:title" content="EL KINDER de kanela"><meta property="og:description" content="Notas, fotos, informes y un chat con cariño.">
+<meta property="og:url" content="https://mocosconazucar.github.io/kanela/"><meta property="og:image" content="https://mocosconazucar.github.io/kanela/preview.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://mocosconazucar.github.io/kanela/preview.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Nunito:wght@400;600;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=DotGothic16&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="bgfill"></div>
+<div id="boot" aria-hidden="true"><div class="bt"><b>EL KINDER <em>de</em> kanela</b><pre><span>[  ok  ] cargando kanela os</span><span>[  ok  ] vidrio · estrellas · gotitas</span><span>[  ok  ] conectando comentarios</span></pre><div class="bp"><i></i></div></div></div>
+<div id="navbar"></div><div id="toasts" aria-live="polite"></div>
+<div id="bgfill"><div id="bgimg"></div></div>
 <div class="app" id="app">
   <aside class="side glass" id="side">
     <header class="srv">EL KINDER <small>de</small> kanela <span>✧˖°</span></header>
@@ -35,6 +47,7 @@
       <h1 id="chName"># inicio</h1><p id="chDesc"></p>
       <div class="acts2">
         <span class="mono" id="topClock"></span>
+        <button id="btnBell" class="ib" title="avisos de mensajes" aria-label="avisos de mensajes"><svg viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button>
         <button id="btnFx" class="ib" title="efectos" aria-label="efectos" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg></button>
         <button id="btnCustom" class="ib only-admin" title="personalizar" aria-label="personalizar"><svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
         <button id="btnAdmin" class="ib" title="modo Draxie" aria-label="modo Draxie"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg></button>
@@ -44,7 +57,7 @@
     <main>
       <section id="v-inicio" class="view">
         <article class="hero glass">
-          <div class="banner" id="banner"><h2 class="title"><span class="kao">(๑˃ᴗ˂)ﻭ</span> EL KINDER <small>de</small> kanela <span class="kao">٩(◕‿◕｡)۶</span></h2></div>
+          <div class="banner" id="banner"><span class="wm" aria-hidden="true">KANELA</span><div class="ttl"><small class="mono">// bienvenid@ al kinder</small><h2 class="title">EL KINDER <em>de</em> kanela</h2><span class="kao">(๑˃ᴗ˂)ﻭ</span></div></div>
           <div class="who">
             <div class="avatar"><img id="avImg" alt="Foto de Draxie" hidden><i class="dot"></i></div>
             <div class="bubble"><span id="estado"></span><button id="mood" class="link" title="cambiar mood">(˶ᵔ ᵕ ᵔ˶)</button></div>
@@ -59,7 +72,7 @@
           <article class="glass card nf" id="nf"></article>
           <article class="glass card term span2"><div class="tbar"><i></i><i></i><i></i><span>draxie@kanela: ~</span></div><pre id="term" aria-label="terminal decorativa"></pre></article>
           <article class="glass card span2"><h3>últimas notas</h3><div id="ultimas"></div></article>
-          <article class="glass card viz"><div class="bars" id="bars" aria-hidden="true"></div><span class="mono" id="song"></span></article>
+          <article class="glass card viz"><h3>telemetría</h3><div id="stats"></div><div class="bars" id="bars" aria-hidden="true"></div><span class="mono" id="song"></span></article>
         </div>
       </section>
 
@@ -147,6 +160,7 @@
   <button class="pill" data-del="banner">quitar banner</button>
   <label>foto de perfil <input type="file" id="avatarFile" accept="image/*"></label>
   <button class="pill" data-del="avatar">quitar foto</button>
+  <label>opacidad de la foto de fondo <input type="range" id="bgOp" min="10" max="100" value="50"></label>
   <label>color de acento <input type="color" id="accent" value="#ff7eb6"></label>
   <p class="small" id="panelMsg"></p>
   <div class="row"><button class="pill" id="reset">restablecer</button><button class="pill" id="closePanel">cerrar</button></div>
@@ -168,7 +182,18 @@
   <div class="row"><button class="pill">guardar</button><button class="pill" type="button" id="pCancel">ahora no</button></div>
 </form></dialog>
 
-<dialog id="lb"><img id="lbImg" alt=""></dialog>
+<dialog id="lb"><div class="dossier glass">
+  <button class="ib dclose" id="lbClose" aria-label="cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <figure class="dfig"><img id="lbImg" alt="">
+    <button class="ib dprev" id="lbPrev" aria-label="anterior"><svg viewBox="0 0 24 24"><path d="M14 6l-6 6 6 6"/></svg></button>
+    <button class="ib dnext" id="lbNext" aria-label="siguiente"><svg viewBox="0 0 24 24"><path d="M10 6l6 6-6 6"/></svg></button></figure>
+  <div class="dinfo">
+    <small class="mono">// FOTO <span id="lbN"></span></small>
+    <h2 id="lbTitle"></h2><p id="lbDesc"></p>
+    <form id="lbEdit" hidden><input class="inp" id="lbT" placeholder="título" maxlength="60"><textarea class="inp" id="lbD" rows="4" placeholder="descripción" maxlength="400"></textarea><button class="pill">guardar</button></form>
+    <div class="dmeta mono"><span>archivo</span><b id="lbSrc"></b></div>
+    <div class="barcode" aria-hidden="true"></div>
+  </div></div></dialog>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
