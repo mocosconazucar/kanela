@@ -67,12 +67,23 @@
           <div class="chips" id="redes"></div>
         </article>
         <div class="bento">
-          <article class="glass card span2"><h3>sobre mí</h3><p id="bio"></p><p class="small" id="desde"></p></article>
-          <article class="glass card clock"><b id="hora"></b><span id="fecha"></span></article>
-          <article class="glass card nf" id="nf"></article>
-          <article class="glass card term span2"><div class="tbar"><i></i><i></i><i></i><span>draxie@kanela: ~</span></div><pre id="term" aria-label="terminal decorativa"></pre></article>
-          <article class="glass card span2"><h3>últimas notas</h3><div id="ultimas"></div></article>
-          <article class="glass card viz"><h3>telemetría</h3><div id="stats"></div><div class="bars" id="bars" aria-hidden="true"></div><span class="mono" id="song"></span></article>
+          <article class="glass card term a-term"><div class="tbar"><i></i><i></i><i></i><span>sobre-mi.txt — draxie@kanela</span></div><pre id="term" aria-label="sobre mí"></pre></article>
+          <article class="glass card clock a-clock"><b id="hora"></b><span id="fecha"></span></article>
+          <article class="glass card nf a-nf" id="nf"></article>
+          <article class="glass card a-stats"><h3>telemetría</h3><div id="stats"></div></article>
+          <article class="glass card pet a-pet">
+            <div class="pbox plog" id="plog" aria-live="polite"></div>
+            <div class="pbox pface"><div class="ptag"><b id="pname">KANELA // TALKING</b><em>● CONNECTED</em></div>
+              <svg class="face" id="face" data-m="happy" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="66" r="40" fill="#efd3b1"/>
+              <path d="M60 26c-20 0-26 22-6 25 15 2 18-14 5-14-9 0-10 9-3 9" fill="none" stroke="#c98f5e" stroke-width="4.5" stroke-linecap="round"/>
+              <ellipse class="eye" cx="45" cy="68" rx="4.2" ry="6" fill="#2a211d"/><ellipse class="eye" cx="75" cy="68" rx="4.2" ry="6" fill="#2a211d"/>
+              <ellipse cx="37" cy="80" rx="6.5" ry="3.8" fill="#ff9ccb" opacity=".65"/><ellipse cx="83" cy="80" rx="6.5" ry="3.8" fill="#ff9ccb" opacity=".65"/>
+              <path class="mouth" d="M53 82q7 7 14 0" fill="none" stroke="#2a211d" stroke-width="3" stroke-linecap="round"/>
+              <text class="zzz" x="90" y="34" font-size="14" fill="#8ea39d">z z</text></svg></div>
+            <form class="pbox pin" id="pform"><span>&gt;_</span><input id="pcmd" class="pcmd" placeholder="escribe 'help' para ver comandos..." autocomplete="off" maxlength="40" aria-label="comandos"></form>
+          </article>
+          <article class="glass card a-notas"><h3>últimas notas</h3><div id="ultimas"></div></article>
         </div>
       </section>
 
